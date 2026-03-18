@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+:root {
+  --brand-primary: #1d6273;
+  --brand-primary-deep: #144a58;
+  --brand-secondary: #7ed8e6;
+  --brand-secondary-soft: #a8ebf5;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #144a58;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(0.75rem, 1.8vw, 1rem);
+  max-width: 100%;
+  filter: drop-shadow(0 10px 30px rgba(29, 98, 115, 0.18));
+}
+
+.brand-logo__mark {
+  position: relative;
+  width: clamp(2.15rem, 4vw, 3rem);
+  height: clamp(2.15rem, 4vw, 3rem);
+  flex: 0 0 auto;
+}
+
+.brand-logo__stroke {
+  position: absolute;
+  height: 14%;
+  width: 76%;
+  border-radius: 999px;
+  transform: rotate(-47deg);
+  transform-origin: center;
+  left: 0;
+}
+
+.brand-logo__stroke--primary {
+  top: 10%;
+  background: var(--brand-primary);
+}
+
+.brand-logo__stroke--accent {
+  top: 37%;
+  left: 16%;
+  background: #4eaebe;
+}
+
+.brand-logo__stroke--secondary {
+  top: 64%;
+  left: 32%;
+  background: var(--brand-secondary);
+}
+
+.brand-logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.brand-logo__title {
+  color: var(--brand-primary);
+  font-size: clamp(1.15rem, 2.25vw, 2rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.brand-logo__subtitle {
+  color: var(--brand-secondary);
+  font-size: clamp(0.5rem, 0.95vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  margin-left: 0.2rem;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .brand-logo__title {
+    letter-spacing: 0.18em;
+  }
+
+  .brand-logo__subtitle {
+    letter-spacing: 0.18em;
+    margin-left: 0.1rem;
+  }
+}
