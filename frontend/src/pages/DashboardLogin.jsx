@@ -137,12 +137,12 @@ function DashboardLogin() {
 
           <p className="text-sm text-[#5f7d87]">
             {/* Need a dashboard account?{" "} */}
-            <Link
+            {/* <Link
               to="/dashboard/register"
               className="font-semibold text-[#1d6273] transition hover:text-[#144a58]"
             >
               Register here
-            </Link>
+            </Link> */}
           </p>
         </section>
       </div>
