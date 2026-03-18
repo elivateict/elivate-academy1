@@ -24,13 +24,13 @@ import ReadHackathonRegistration from "./Dashboard/ReadHackathonRegistration"
 import RegisterHackthon from "./pages/RegisterHAckthon"
 import DashboardShell from "./Dashboard/DashboardShell"
 import DashboardLogin from "./pages/DashboardLogin"
-// import DashboardRegister from "./pages/DashboardRegister"
+import DashboardRegister from "./pages/DashboardRegister"
 import { DashboardProtectedRoute } from "./context/DashboardAuthContext"
 import { Routes, Route } from "react-router-dom"
 function App () {
   return <>
   <Routes>
-      {/* <Route path="/dashboard/register" element={<DashboardRegister />} /> */}
+      <Route path="/dashboard/register" element={<DashboardRegister />} />
       <Route path="/dashboard/login" element={<DashboardLogin />} />
 
       <Route element={<DashboardProtectedRoute />}>
