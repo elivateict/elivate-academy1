@@ -39,7 +39,7 @@ function DashboardRegister() {
     setLoading(true);
 
     try {
-      register(formData);
+      await register(formData);
       navigate("/dashboard", { replace: true });
     } catch (error) {
       setMessage(error.message || "Could not create the dashboard account.");

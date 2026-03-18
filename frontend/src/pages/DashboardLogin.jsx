@@ -32,7 +32,7 @@ function DashboardLogin() {
     setLoading(true);
 
     try {
-      login(formData);
+      await login(formData);
       const nextPath = location.state?.from?.pathname || "/dashboard";
       navigate(nextPath, { replace: true });
     } catch (error) {
@@ -94,8 +94,8 @@ function DashboardLogin() {
 
           {!hasRegisteredUsers && (
             <div className="dashboard-alert dashboard-alert--error">
-              No dashboard account is signed up yet. This page stays on login as
-              requested.
+              No dashboard account is signed up yet. Login stays protected, and you
+              can create the first dashboard account below.
             </div>
           )}
 
@@ -136,13 +136,13 @@ function DashboardLogin() {
           </form>
 
           <p className="text-sm text-[#5f7d87]">
-            {/* Need a dashboard account?{" "} */}
-            {/* <Link
+            Need a dashboard account?{" "}
+            <Link
               to="/dashboard/register"
               className="font-semibold text-[#1d6273] transition hover:text-[#144a58]"
             >
               Register here
-            </Link> */}
+            </Link>
           </p>
         </section>
       </div>

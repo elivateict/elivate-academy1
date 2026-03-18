@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { apiUrl } from "../utils/api";
 
 const DASHBOARD_USERS_KEY = "elivate_dashboard_users";
 const DASHBOARD_SESSION_KEY = "elivate_dashboard_session";
@@ -33,34 +34,65 @@ function readStoredSession() {
   }
 }
 
+function persistLegacyUsers(users) {
+  try {
+    window.localStorage.setItem(DASHBOARD_USERS_KEY, JSON.stringify(users));
+  } catch (error) {
+    console.error("Error saving legacy dashboard users:", error);
+  }
+}
+
+async function fetchDashboardAuthStatus() {
+  const response = await fetch(apiUrl("/api/dashboard-auth/status"));
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Could not read dashboard auth status.");
+  }
+
+  return data;
+}
+
+async function registerDashboardUser(payload) {
+  const response = await fetch(apiUrl("/api/dashboard-auth/register"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Could not create dashboard account.");
+  }
+
+  return data.data;
+}
+
+async function loginDashboardUser(payload) {
+  const response = await fetch(apiUrl("/api/dashboard-auth/login"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Could not login to dashboard.");
+  }
+
+  return data.data;
+}
+
 export function DashboardAuthProvider({ children }) {
-  const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const storedUsers = readStoredUsers();
-    const storedSession = readStoredSession();
-
-    setUsers(storedUsers);
-
-    if (storedSession?.email) {
-      const matchedUser = storedUsers.find(
-        (user) => user.email === storedSession.email
-      );
-
-      if (matchedUser) {
-        setCurrentUser(matchedUser);
-      }
-    }
-
-    setReady(true);
-  }, []);
-
-  const persistUsers = (nextUsers) => {
-    setUsers(nextUsers);
-    window.localStorage.setItem(DASHBOARD_USERS_KEY, JSON.stringify(nextUsers));
-  };
+  const [hasRegisteredUsers, setHasRegisteredUsers] = useState(false);
 
   const persistSession = (user) => {
     setCurrentUser(user);
@@ -69,9 +101,11 @@ export function DashboardAuthProvider({ children }) {
       window.localStorage.setItem(
         DASHBOARD_SESSION_KEY,
         JSON.stringify({
+          id: user.id,
           email: user.email,
           fullName: user.fullName,
           createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         })
       );
     } else {
@@ -79,54 +113,83 @@ export function DashboardAuthProvider({ children }) {
     }
   };
 
-  const register = ({ fullName, email, password }) => {
-    const trimmedName = fullName.trim();
-    const normalizedEmail = email.trim().toLowerCase();
+  useEffect(() => {
+    const bootstrapAuth = async () => {
+      const storedUsers = readStoredUsers();
+      const storedSession = readStoredSession();
 
-    if (!trimmedName || !normalizedEmail || !password) {
-      throw new Error("Full name, email, and password are required.");
-    }
+      if (storedSession?.email) {
+        setCurrentUser(storedSession);
+      }
 
-    if (password.length < 6) {
-      throw new Error("Password must be at least 6 characters.");
-    }
+      try {
+        for (const localUser of storedUsers) {
+          if (!localUser?.email || !localUser?.password || !localUser?.fullName) {
+            continue;
+          }
 
-    const emailExists = users.some((user) => user.email === normalizedEmail);
+          try {
+            await registerDashboardUser({
+              fullName: localUser.fullName,
+              email: localUser.email,
+              password: localUser.password,
+            });
+          } catch (error) {
+            if (!String(error.message || "").includes("already registered")) {
+              console.error("Error syncing local dashboard user:", error);
+            }
+          }
+        }
 
-    if (emailExists) {
-      throw new Error("This dashboard email is already registered.");
-    }
-
-    const newUser = {
-      id:
-        window.crypto?.randomUUID?.() ||
-        `dashboard-user-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      fullName: trimmedName,
-      email: normalizedEmail,
-      password,
-      createdAt: new Date().toISOString(),
+        const status = await fetchDashboardAuthStatus();
+        setHasRegisteredUsers(Boolean(status.hasUsers));
+      } catch (error) {
+        console.error("Error loading dashboard auth status:", error);
+        setHasRegisteredUsers(storedUsers.length > 0);
+      } finally {
+        setReady(true);
+      }
     };
 
-    const nextUsers = [...users, newUser];
-    persistUsers(nextUsers);
-    persistSession(newUser);
+    bootstrapAuth();
+  }, []);
 
-    return newUser;
+  const register = async ({ fullName, email, password }) => {
+    const user = await registerDashboardUser({
+      fullName,
+      email,
+      password,
+    });
+
+    const storedUsers = readStoredUsers();
+    const nextUsers = [
+      ...storedUsers.filter(
+        (storedUser) => storedUser?.email?.toLowerCase() !== user.email?.toLowerCase()
+      ),
+      {
+        fullName,
+        email: user.email,
+        password,
+      },
+    ];
+
+    persistLegacyUsers(nextUsers);
+    setHasRegisteredUsers(true);
+    persistSession(user);
+
+    return user;
   };
 
-  const login = ({ email, password }) => {
-    const normalizedEmail = email.trim().toLowerCase();
+  const login = async ({ email, password }) => {
+    const user = await loginDashboardUser({
+      email,
+      password,
+    });
 
-    const matchedUser = users.find(
-      (user) => user.email === normalizedEmail && user.password === password
-    );
+    setHasRegisteredUsers(true);
+    persistSession(user);
 
-    if (!matchedUser) {
-      throw new Error("Invalid email or password.");
-    }
-
-    persistSession(matchedUser);
-    return matchedUser;
+    return user;
   };
 
   const logout = () => {
@@ -135,16 +198,15 @@ export function DashboardAuthProvider({ children }) {
 
   const value = useMemo(
     () => ({
-      users,
       currentUser,
       ready,
       isAuthenticated: Boolean(currentUser),
-      hasRegisteredUsers: users.length > 0,
+      hasRegisteredUsers,
       register,
       login,
       logout,
     }),
-    [users, currentUser, ready]
+    [currentUser, ready, hasRegisteredUsers]
   );
 
   return (

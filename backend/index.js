@@ -11,6 +11,7 @@ const attendanceRouter = require("./Router/attendanceRouter");
 const hackathonRouter = require("./Router/hackathonRouter");
 const registrationRouter = require("./Router/registrationRouter");
 const alumniRouter = require("./Router/alumniRouter");
+const dashboardAuthRouter = require("./Router/dashboardAuthRouter");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -48,6 +49,7 @@ app.use("/api", attendanceRouter);
 app.use("/api", hackathonRouter);
 app.use("/api", registrationRouter);
 app.use("/api", alumniRouter);
+app.use("/api", dashboardAuthRouter);
 
 // MongoDB connection
 mongoose
