@@ -166,7 +166,7 @@ export function useDashboardAuth() {
 
 export function DashboardProtectedRoute() {
   const location = useLocation();
-  const { ready, isAuthenticated, hasRegisteredUsers } = useDashboardAuth();
+  const { ready, isAuthenticated } = useDashboardAuth();
 
   if (!ready) {
     return (
@@ -182,7 +182,7 @@ export function DashboardProtectedRoute() {
   if (!isAuthenticated) {
     return (
       <Navigate
-        to={hasRegisteredUsers ? "/dashboard/login" : "/dashboard/register"}
+        to="/dashboard/login"
         replace
         state={{ from: location }}
       />

@@ -18,10 +18,6 @@ function DashboardLogin() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  if (!hasRegisteredUsers) {
-    return <Navigate to="/dashboard/register" replace />;
-  }
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((previous) => ({
@@ -94,6 +90,13 @@ function DashboardLogin() {
 
           {message && (
             <div className="dashboard-alert dashboard-alert--error">{message}</div>
+          )}
+
+          {!hasRegisteredUsers && (
+            <div className="dashboard-alert dashboard-alert--error">
+              No dashboard account is signed up yet. This page stays on login as
+              requested.
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
