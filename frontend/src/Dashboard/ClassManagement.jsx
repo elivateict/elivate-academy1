@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { apiUrl } from "../utils/api";
 
 function ClassManagement() {
@@ -180,10 +179,8 @@ function ClassManagement() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#050716]">
-      <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="max-w-7xl mx-auto">
+    <div className="dashboard-page">
+      <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -466,7 +463,6 @@ function ClassManagement() {
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 }

@@ -14,33 +14,42 @@ import ClassManagement from "./Dashboard/ClassManagement"
 import ClassStudents from "./Dashboard/ClassStudents"
 import ContactMessages from "./Dashboard/ContactMessages"
 import Attendance from "./Dashboard/Attendance"
+import AlumniManagement from "./Dashboard/AlumniManagement"
 import Hackthon from "./pages/Hackthon"
 import HackthonPost from "./Components/Hackthon/HackthonPost"
 import HackthonDetails from "./Components/Hackthon/HackthonDetails"
 import HackathonManagement from "./Dashboard/HackathonManagement"
 import HackathonRegistrations from "./Dashboard/HackathonRegistrations"
 import ReadHackathonRegistration from "./Dashboard/ReadHackathonRegistration"
+import RegisterHackthon from "./pages/RegisterHAckthon"
+import DashboardShell from "./Dashboard/DashboardShell"
+import DashboardLogin from "./pages/DashboardLogin"
+// import DashboardRegister from "./pages/DashboardRegister"
+import { DashboardProtectedRoute } from "./context/DashboardAuthContext"
 import { Routes, Route } from "react-router-dom"
 function App () {
   return <>
   <Routes>
-      <Route path="/dashboard/*" element={
-        <>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/students" element={<StudentsList />} />
-            <Route path="/students/:id" element={<ReadStudent />} />
-            <Route path="/create" element={<StudentCreate />} />
-            <Route path="/classes" element={<ClassManagement />} />
-            <Route path="/classes/:className/students" element={<ClassStudents />} />
-            <Route path="/attendance" element={<Attendance />} />
-            <Route path="/contacts" element={<ContactMessages />} />
-            <Route path="/hackathons" element={<HackathonManagement />} />
-            <Route path="/hackathon-registrations" element={<HackathonRegistrations />} />
-            <Route path="/hackathon-registrations/:id" element={<ReadHackathonRegistration />} />
-          </Routes>
-        </>
-      } />
+      {/* <Route path="/dashboard/register" element={<DashboardRegister />} /> */}
+      <Route path="/dashboard/login" element={<DashboardLogin />} />
+
+      <Route element={<DashboardProtectedRoute />}>
+        <Route path="/dashboard" element={<DashboardShell />}>
+          <Route index element={<Dashboard />} />
+          <Route path="students" element={<StudentsList />} />
+          <Route path="students/:id" element={<ReadStudent />} />
+          <Route path="create" element={<StudentCreate />} />
+          <Route path="classes" element={<ClassManagement />} />
+          <Route path="classes/:className/students" element={<ClassStudents />} />
+          <Route path="attendance" element={<Attendance />} />
+          <Route path="alumni" element={<AlumniManagement />} />
+          <Route path="contacts" element={<ContactMessages />} />
+          <Route path="hackathons" element={<HackathonManagement />} />
+          <Route path="hackathon-registrations" element={<HackathonRegistrations />} />
+          <Route path="hackathon-registrations/:id" element={<ReadHackathonRegistration />} />
+        </Route>
+      </Route>
+
       <Route path="/*" element={
         <>
           <Header />
@@ -53,6 +62,7 @@ function App () {
             <Route path="/getstarted" element={<Getstarted />} />
             <Route path="/hackathons" element={<Hackthon />} />
             <Route path="/hackathons/:id" element={<HackthonDetails />} />
+            <Route path="/hackathons/:id/register" element={<RegisterHackthon />} />
           </Routes>
           <Footer />
         </>

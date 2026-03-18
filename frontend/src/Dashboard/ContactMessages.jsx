@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Sidebar from "./Sidebar";
 import { apiUrl } from "../utils/api";
 
 function ContactMessages() {
@@ -137,10 +136,8 @@ function ContactMessages() {
   const newCount = contacts.filter((c) => c.status === "new").length;
 
   return (
-    <div className="flex min-h-screen bg-[#050716]">
-      <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="max-w-7xl mx-auto">
+    <div className="dashboard-page">
+      <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">
@@ -373,7 +370,6 @@ function ContactMessages() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

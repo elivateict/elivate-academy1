@@ -26,6 +26,14 @@ const hackathonSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    registrationOpen: {
+      type: Boolean,
+      default: true,
+    },
+    registrationClosedAt: {
+      type: Date,
+      default: null,
+    },
     images: {
       type: [String],
       required: true,

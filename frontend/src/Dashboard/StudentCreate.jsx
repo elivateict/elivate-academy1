@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { apiUrl } from "../utils/api";
 
 function StudentCreate() {
@@ -116,10 +115,8 @@ function StudentCreate() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#050716]">
-      <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="max-w-4xl mx-auto">
+    <div className="dashboard-page">
+      <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <button
               onClick={() => navigate("/dashboard/students")}
@@ -330,7 +327,6 @@ function StudentCreate() {
             </form>
           </div>
         </div>
-      </div>
     </div>
   );
 }

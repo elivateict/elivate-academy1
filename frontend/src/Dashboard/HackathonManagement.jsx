@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { apiUrl } from "../utils/api";
 
 function HackathonManagement() {
@@ -16,6 +15,7 @@ function HackathonManagement() {
     date: "",
     location: "",
     details: "",
+    registrationOpen: true,
     image1: "",
     image2: "",
     image3: "",
@@ -57,6 +57,7 @@ function HackathonManagement() {
       date: "",
       location: "",
       details: "",
+      registrationOpen: true,
       image1: "",
       image2: "",
       image3: "",
@@ -101,6 +102,7 @@ function HackathonManagement() {
         date: formData.date,
         location: formData.location,
         details: formData.details,
+        registrationOpen: formData.registrationOpen,
         images: [formData.image1, formData.image2, formData.image3],
       };
 
@@ -149,11 +151,50 @@ function HackathonManagement() {
         : "",
       location: hack.location || "",
       details: hack.details || "",
+      registrationOpen: hack.registrationOpen !== false,
       image1: (hack.images && hack.images[0]) || "",
       image2: (hack.images && hack.images[1]) || "",
       image3: (hack.images && hack.images[2]) || "",
     });
     setShowForm(true);
+  };
+
+  const handleToggleRegistration = async (hack) => {
+    try {
+      const response = await fetch(apiUrl(`/api/hackathons/${hack._id}`), {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          registrationOpen: hack.registrationOpen === false,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMessage({
+          type: "success",
+          text:
+            hack.registrationOpen === false
+              ? "Registration reopened successfully!"
+              : "Registration closed successfully!",
+        });
+        fetchHackathons();
+        setTimeout(() => setMessage({ type: "", text: "" }), 2500);
+      } else {
+        setMessage({
+          type: "error",
+          text: data.message || "Error updating registration status",
+        });
+      }
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: "Network error. Please try again.",
+      });
+    }
   };
 
   const handleDelete = async (id) => {
@@ -183,10 +224,8 @@ function HackathonManagement() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#050716]">
-      <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="max-w-7xl mx-auto">
+    <div className="dashboard-page">
+      <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -316,6 +355,24 @@ function HackathonManagement() {
                   />
                 </div>
 
+                <label className="flex items-center gap-3 rounded-lg border border-white/10 bg-[#020617]/50 px-4 py-3">
+                  <input
+                    type="checkbox"
+                    name="registrationOpen"
+                    checked={formData.registrationOpen}
+                    onChange={handleChange}
+                    className="h-4 w-4 rounded border-white/10 bg-[#020617] text-indigo-500 focus:ring-indigo-500"
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-white">
+                      Registration is open
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Turn this off to show users that registration has ended.
+                    </p>
+                  </div>
+                </label>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-gray-300 mb-2">
@@ -403,6 +460,9 @@ function HackathonManagement() {
                         Location
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Registration
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
@@ -424,6 +484,17 @@ function HackathonManagement() {
                         <td className="px-6 py-4 whitespace-nowrap text-gray-300">
                           {hack.location || "-"}
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${
+                              hack.registrationOpen === false
+                                ? "bg-amber-500/20 text-amber-300"
+                                : "bg-emerald-500/20 text-emerald-300"
+                            }`}
+                          >
+                            {hack.registrationOpen === false ? "Closed" : "Open"}
+                          </span>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <div className="flex gap-3 items-center">
                             <button
@@ -437,6 +508,18 @@ function HackathonManagement() {
                               className="text-red-400 hover:text-red-300"
                             >
                               Delete
+                            </button>
+                            <button
+                              onClick={() => handleToggleRegistration(hack)}
+                              className={
+                                hack.registrationOpen === false
+                                  ? "text-emerald-300 hover:text-emerald-200"
+                                  : "text-amber-300 hover:text-amber-200"
+                              }
+                            >
+                              {hack.registrationOpen === false
+                                ? "Reopen registration"
+                                : "Close registration"}
                             </button>
                             <Link
                               to={`/hackathons/${hack._id}`}
@@ -456,7 +539,6 @@ function HackathonManagement() {
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 }

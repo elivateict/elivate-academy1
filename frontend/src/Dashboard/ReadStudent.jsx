@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { apiUrl } from "../utils/api";
 
 function ReadStudent() {
@@ -142,9 +141,8 @@ function ReadStudent() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-[#050716]">
-        <Sidebar />
-        <div className="flex-1 flex items-center justify-center">
+      <div className="dashboard-page">
+        <div className="flex min-h-[50vh] items-center justify-center">
           <p className="text-gray-400">Loading...</p>
         </div>
       </div>
@@ -153,9 +151,8 @@ function ReadStudent() {
 
   if (!student) {
     return (
-      <div className="flex min-h-screen bg-[#050716]">
-        <Sidebar />
-        <div className="flex-1 flex items-center justify-center">
+      <div className="dashboard-page">
+        <div className="flex min-h-[50vh] items-center justify-center">
           <p className="text-gray-400">Student not found</p>
         </div>
       </div>
@@ -163,10 +160,8 @@ function ReadStudent() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#050716]">
-      <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="max-w-4xl mx-auto">
+    <div className="dashboard-page">
+      <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -458,7 +453,6 @@ function ReadStudent() {
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 }

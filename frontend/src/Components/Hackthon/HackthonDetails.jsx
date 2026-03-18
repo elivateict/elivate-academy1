@@ -63,6 +63,7 @@ function HackthonDetails() {
   const formattedDate = hack.date
     ? new Date(hack.date).toLocaleDateString()
     : "";
+  const registrationOpen = hack.registrationOpen !== false;
 
   return (
     <main className="min-h-screen bg-white py-16 text-[#144a58] md:py-20">
@@ -147,15 +148,31 @@ function HackthonDetails() {
                 Ma xiisaynaysaa hackathon-ka xiga?
               </p>
               <p className="mb-4 text-xs text-slate-600 md:text-sm">
-                Is diiwaan geli si aad ugu biirto liiska email-ka ee
-                hackathon-nada, workshops, iyo events kale ee Livate Academy.
+                Buuxi form-ka si aad ugu biirto hackathon-kan. Waxaan kaa
+                weydiin doonaa magacaaga, meesha aad dagan tahay, email-ka,
+                waxbarashadaada, iyo haddii aad haysato computer.
               </p>
-              <Link
-                to="/getstarted"
-                className="inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] px-4 py-2.5 text-xs font-medium text-white transition-all hover:brightness-110 md:text-sm"
-              >
-                Join upcoming hackathons
-              </Link>
+              {registrationOpen ? (
+                <Link
+                  to={`/hackathons/${hack._id}/register`}
+                  className="inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] px-4 py-2.5 text-xs font-medium text-white transition-all hover:brightness-110 md:text-sm"
+                >
+                  Join this hackathon
+                </Link>
+              ) : (
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-700 md:text-sm">
+                    Registration for this hackathon has ended.
+                  </div>
+                  <button
+                    type="button"
+                    disabled
+                    className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-full bg-slate-300 px-4 py-2.5 text-xs font-medium text-slate-600 md:text-sm"
+                  >
+                    Registration closed
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2 rounded-2xl border border-dashed border-[#d8edf1] bg-[#fcfeff] px-5 py-4 text-xs text-slate-600 md:text-sm">

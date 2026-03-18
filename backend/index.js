@@ -3,12 +3,14 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 const registerRouter = require("./Router/registerRouter");
 const classRouter = require("./Router/classRouter");
 const contactRouter = require("./Router/contactRouter");
 const attendanceRouter = require("./Router/attendanceRouter");
 const hackathonRouter = require("./Router/hackathonRouter");
 const registrationRouter = require("./Router/registrationRouter");
+const alumniRouter = require("./Router/alumniRouter");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -36,6 +38,7 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/api", registerRouter);
@@ -44,6 +47,7 @@ app.use("/api", contactRouter);
 app.use("/api", attendanceRouter);
 app.use("/api", hackathonRouter);
 app.use("/api", registrationRouter);
+app.use("/api", alumniRouter);
 
 // MongoDB connection
 mongoose

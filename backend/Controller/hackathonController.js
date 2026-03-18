@@ -1,9 +1,46 @@
 const Hackathon = require("../model/hackathonModel");
 
+const parseBoolean = (value) => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    if (value.toLowerCase() === "true") {
+      return true;
+    }
+
+    if (value.toLowerCase() === "false") {
+      return false;
+    }
+  }
+
+  return undefined;
+};
+
+const normalizeImages = (images) => {
+  if (typeof images === "string") {
+    return images
+      .split(/[,\n]/)
+      .map((value) => value.trim())
+      .filter(Boolean);
+  }
+
+  return images;
+};
+
 // POST - Create new hackathon
 const createHackathon = async (req, res) => {
   try {
-    const { title, description, date, location, details, images } = req.body;
+    const {
+      title,
+      description,
+      date,
+      location,
+      details,
+      images,
+      registrationOpen,
+    } = req.body;
 
     if (!title || !description || !date || !location || !details) {
       return res.status(400).json({
@@ -12,15 +49,8 @@ const createHackathon = async (req, res) => {
       });
     }
 
-    let imagesArray = images;
-
-    // Allow frontend to send images as array or as string with line breaks/commas
-    if (typeof images === "string") {
-      imagesArray = images
-        .split(/[,\n]/)
-        .map((v) => v.trim())
-        .filter(Boolean);
-    }
+    const imagesArray = normalizeImages(images);
+    const normalizedRegistrationOpen = parseBoolean(registrationOpen);
 
     const newHackathon = new Hackathon({
       title,
@@ -28,6 +58,9 @@ const createHackathon = async (req, res) => {
       date,
       location,
       details,
+      registrationOpen: normalizedRegistrationOpen ?? true,
+      registrationClosedAt:
+        normalizedRegistrationOpen === false ? new Date() : null,
       images: imagesArray,
     });
 
@@ -99,11 +132,26 @@ const updateHackathon = async (req, res) => {
     const { id } = req.params;
     const updateData = { ...req.body };
 
-    if (typeof updateData.images === "string") {
-      updateData.images = updateData.images
-        .split(/[,\n]/)
-        .map((v) => v.trim())
-        .filter(Boolean);
+    if (updateData.images !== undefined) {
+      updateData.images = normalizeImages(updateData.images);
+    }
+
+    if (updateData.registrationOpen !== undefined) {
+      const normalizedRegistrationOpen = parseBoolean(
+        updateData.registrationOpen
+      );
+
+      if (normalizedRegistrationOpen === undefined) {
+        return res.status(400).json({
+          success: false,
+          message: "registrationOpen must be true or false",
+        });
+      }
+
+      updateData.registrationOpen = normalizedRegistrationOpen;
+      updateData.registrationClosedAt = normalizedRegistrationOpen
+        ? null
+        : new Date();
     }
 
     const updatedHackathon = await Hackathon.findByIdAndUpdate(

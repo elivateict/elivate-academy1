@@ -80,6 +80,7 @@ function HackthonPost() {
               const formattedDate = hack.date
                 ? new Date(hack.date).toLocaleDateString()
                 : "";
+              const registrationOpen = hack.registrationOpen !== false;
 
               return (
                 <article
@@ -106,9 +107,20 @@ function HackthonPost() {
                         <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#7ed8e6] animate-pulse" />
                         {formattedDate}
                       </p>
-                      <span className="rounded-full border border-[#7ed8e6]/40 bg-[#eff9fb] px-3 py-1 text-[11px] text-[#1d6273]">
-                        {hack.location}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full border border-[#7ed8e6]/40 bg-[#eff9fb] px-3 py-1 text-[11px] text-[#1d6273]">
+                          {hack.location}
+                        </span>
+                        <span
+                          className={`rounded-full px-3 py-1 text-[11px] ${
+                            registrationOpen
+                              ? "border border-emerald-200 bg-emerald-50 text-emerald-700"
+                              : "border border-amber-200 bg-amber-50 text-amber-700"
+                          }`}
+                        >
+                          {registrationOpen ? "Open" : "Closed"}
+                        </span>
+                      </div>
                     </div>
 
                     <h2 className="text-lg font-semibold leading-snug transition-colors group-hover:text-[#1d6273] md:text-xl">

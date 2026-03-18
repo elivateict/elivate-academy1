@@ -1,23 +1,39 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { apiUrl } from "../utils/api";
 
 function ReadHackathonRegistration() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [registration, setRegistration] = useState(null);
+  const [hackathons, setHackathons] = useState([]);
+  const [selectedHackathonId, setSelectedHackathonId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [savingHackathon, setSavingHackathon] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   useEffect(() => {
-    const fetchRegistration = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(
-          apiUrl(`/api/hackathon-registrations/${id}`)
-        );
-        const data = await res.json();
-        if (res.ok && data.success) {
-          setRegistration(data.data);
+        const [registrationResponse, hackathonsResponse] = await Promise.all([
+          fetch(apiUrl(`/api/hackathon-registrations/${id}`)),
+          fetch(apiUrl("/api/hackathons")),
+        ]);
+
+        const registrationData = await registrationResponse.json();
+        const hackathonsData = await hackathonsResponse.json();
+
+        if (registrationResponse.ok && registrationData.success) {
+          setRegistration(registrationData.data);
+          setSelectedHackathonId(
+            registrationData.data?.hackathonId?._id ||
+              registrationData.data?.hackathonId ||
+              ""
+          );
+        }
+
+        if (hackathonsResponse.ok && hackathonsData.success) {
+          setHackathons(hackathonsData.data || []);
         }
       } catch (error) {
         console.error("Error fetching registration:", error);
@@ -26,14 +42,99 @@ function ReadHackathonRegistration() {
       }
     };
 
-    fetchRegistration();
+    fetchData();
   }, [id]);
+
+  const getHackathonName = () => {
+    if (registration?.hackathonTitle && registration.hackathonTitle !== "-") {
+      return registration.hackathonTitle;
+    }
+
+    const registrationHackathonId =
+      registration?.hackathonId?._id || registration?.hackathonId || "";
+
+    if (registrationHackathonId) {
+      const matchedHackathon = hackathons.find(
+        (hackathon) => hackathon._id === registrationHackathonId
+      );
+
+      if (matchedHackathon?.title) {
+        return matchedHackathon.title;
+      }
+    }
+
+    if (selectedHackathonId) {
+      const selectedHackathon = hackathons.find(
+        (hackathon) => hackathon._id === selectedHackathonId
+      );
+
+      if (selectedHackathon?.title) {
+        return selectedHackathon.title;
+      }
+    }
+
+    if (hackathons.length === 1) {
+      return hackathons[0].title;
+    }
+
+    return "-";
+  };
+
+  const handleHackathonUpdate = async () => {
+    if (!selectedHackathonId) {
+      setMessage({
+        type: "error",
+        text: "Please select a hackathon first.",
+      });
+      return;
+    }
+
+    try {
+      setSavingHackathon(true);
+      setMessage({ type: "", text: "" });
+
+      const response = await fetch(
+        apiUrl(`/api/hackathon-registrations/${id}/hackathon`),
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ hackathonId: selectedHackathonId }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setRegistration(data.data);
+        setSelectedHackathonId(
+          data.data?.hackathonId?._id || data.data?.hackathonId || ""
+        );
+        setMessage({
+          type: "success",
+          text: "Hackathon linked to this registration successfully.",
+        });
+      } else {
+        setMessage({
+          type: "error",
+          text: data.message || "Could not update hackathon.",
+        });
+      }
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: "Network error. Please try again.",
+      });
+    } finally {
+      setSavingHackathon(false);
+    }
+  };
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-[#050716]">
-        <Sidebar />
-        <div className="flex-1 p-8 flex items-center justify-center text-gray-400">
+      <div className="dashboard-page">
+        <div className="flex min-h-[50vh] items-center justify-center text-gray-400">
           Loading registration...
         </div>
       </div>
@@ -42,9 +143,8 @@ function ReadHackathonRegistration() {
 
   if (!registration) {
     return (
-      <div className="flex min-h-screen bg-[#050716]">
-        <Sidebar />
-        <div className="flex-1 p-8 flex items-center justify-center text-gray-400">
+      <div className="dashboard-page">
+        <div className="flex min-h-[50vh] items-center justify-center text-gray-400">
           Registration not found.
         </div>
       </div>
@@ -52,10 +152,8 @@ function ReadHackathonRegistration() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#050716]">
-      <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="max-w-3xl mx-auto">
+    <div className="dashboard-page">
+      <div className="max-w-3xl mx-auto">
           <button
             onClick={() => navigate("/dashboard/hackathon-registrations")}
             className="text-gray-400 hover:text-white mb-6 flex items-center gap-2"
@@ -81,7 +179,58 @@ function ReadHackathonRegistration() {
               Registration Details
             </h1>
 
+            {message.text && (
+              <div
+                className={`mb-5 rounded-xl border px-4 py-3 text-sm ${
+                  message.type === "success"
+                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
+                    : "border-red-500/40 bg-red-500/10 text-red-300"
+                }`}
+              >
+                {message.text}
+              </div>
+            )}
+
+            <div className="mb-6 rounded-xl border border-white/10 bg-[#020617]/50 p-4">
+              <p className="mb-3 text-sm font-medium text-white">
+                Fix hackathon for this registration
+              </p>
+              <div className="flex flex-col gap-3 md:flex-row">
+                <select
+                  value={selectedHackathonId}
+                  onChange={(event) => setSelectedHackathonId(event.target.value)}
+                  className="flex-1 rounded-lg bg-[#020617]/70 border border-white/10 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">Select hackathon</option>
+                  {hackathons.map((hackathon) => (
+                    <option key={hackathon._id} value={hackathon._id}>
+                      {hackathon.title}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={handleHackathonUpdate}
+                  disabled={savingHackathon}
+                  className="rounded-lg bg-indigo-500 px-5 py-2 text-white transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {savingHackathon ? "Saving..." : "Save hackathon"}
+                </button>
+              </div>
+              <p className="mt-2 text-xs text-gray-400">
+                Use this for older registrations that are missing the linked
+                hackathon.
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-400 mb-1">Hackathon</p>
+                <p className="text-white font-medium">
+                  {getHackathonName()}
+                </p>
+              </div>
+
               <div>
                 <p className="text-gray-400 mb-1">Full Name</p>
                 <p className="text-white font-medium">
@@ -123,14 +272,16 @@ function ReadHackathonRegistration() {
               </div>
 
               <div>
-                <p className="text-gray-400 mb-1">Has Laptop</p>
+                <p className="text-gray-400 mb-1">Has Computer</p>
                 <p className="text-white font-medium">
-                  {registration.hasLaptop ? "Yes" : "No"}
+                  {(registration.hasComputer ?? registration.hasLaptop)
+                    ? "Yes"
+                    : "No"}
                 </p>
               </div>
 
               <div>
-                <p className="text-gray-400 mb-1">Study at Ado Madhasana</p>
+                <p className="text-gray-400 mb-1">Studies at Livate Academy</p>
                 <p className="text-white font-medium">
                   {registration.studyRiseAcademy ? "Yes" : "No"}
                 </p>
@@ -156,7 +307,6 @@ function ReadHackathonRegistration() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

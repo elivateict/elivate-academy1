@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { apiUrl } from "../utils/api";
 
 function HackathonRegistrations() {
   const navigate = useNavigate();
   const [registrations, setRegistrations] = useState([]);
+  const [hackathons, setHackathons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
+    hackathonId: "",
     gender: "",
     highestEducation: "",
     mernStackExperience: "",
-    hasLaptop: "",
+    hasComputer: "",
     studyRiseAcademy: "",
   });
 
@@ -21,6 +22,23 @@ function HackathonRegistrations() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
+  useEffect(() => {
+    const fetchHackathons = async () => {
+      try {
+        const response = await fetch(apiUrl("/api/hackathons"));
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          setHackathons(data.data || []);
+        }
+      } catch (error) {
+        console.error("Error fetching hackathons:", error);
+      }
+    };
+
+    fetchHackathons();
+  }, []);
+
   const fetchRegistrations = async () => {
     try {
       setLoading(true);
@@ -28,12 +46,13 @@ function HackathonRegistrations() {
       const params = new URLSearchParams();
 
       if (search) params.append("search", search);
+      if (filters.hackathonId) params.append("hackathonId", filters.hackathonId);
       if (filters.gender) params.append("gender", filters.gender);
       if (filters.highestEducation)
         params.append("highestEducation", filters.highestEducation);
       if (filters.mernStackExperience)
         params.append("mernStackExperience", filters.mernStackExperience);
-      if (filters.hasLaptop) params.append("hasLaptop", filters.hasLaptop);
+      if (filters.hasComputer) params.append("hasComputer", filters.hasComputer);
       if (filters.studyRiseAcademy)
         params.append("studyRiseAcademy", filters.studyRiseAcademy);
 
@@ -86,11 +105,44 @@ function HackathonRegistrations() {
     }
   };
 
+  const getHackathonName = (registration) => {
+    if (registration?.hackathonTitle && registration.hackathonTitle !== "-") {
+      return registration.hackathonTitle;
+    }
+
+    const registrationHackathonId =
+      registration?.hackathonId?._id || registration?.hackathonId || "";
+
+    if (registrationHackathonId) {
+      const matchedHackathon = hackathons.find(
+        (hackathon) => hackathon._id === registrationHackathonId
+      );
+
+      if (matchedHackathon?.title) {
+        return matchedHackathon.title;
+      }
+    }
+
+    if (filters.hackathonId) {
+      const selectedHackathon = hackathons.find(
+        (hackathon) => hackathon._id === filters.hackathonId
+      );
+
+      if (selectedHackathon?.title) {
+        return selectedHackathon.title;
+      }
+    }
+
+    if (hackathons.length === 1) {
+      return hackathons[0].title;
+    }
+
+    return "-";
+  };
+
   return (
-    <div className="flex min-h-screen bg-[#050716]">
-      <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="max-w-7xl mx-auto">
+    <div className="dashboard-page">
+      <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -109,7 +161,7 @@ function HackathonRegistrations() {
               <div className="flex gap-3">
                 <input
                   type="text"
-                  placeholder="Search by name, email, WhatsApp..."
+                  placeholder="Search by name, email, WhatsApp, or hackathon..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -123,7 +175,22 @@ function HackathonRegistrations() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                <select
+                  value={filters.hackathonId}
+                  onChange={(e) =>
+                    handleFilterChange("hackathonId", e.target.value)
+                  }
+                  className="rounded-lg bg-[#020617]/70 border border-white/10 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">All Hackathons</option>
+                  {hackathons.map((hack) => (
+                    <option key={hack._id} value={hack._id}>
+                      {hack.title}
+                    </option>
+                  ))}
+                </select>
+
                 <select
                   value={filters.gender}
                   onChange={(e) => handleFilterChange("gender", e.target.value)}
@@ -162,15 +229,15 @@ function HackathonRegistrations() {
                 </select>
 
                 <select
-                  value={filters.hasLaptop}
+                  value={filters.hasComputer}
                   onChange={(e) =>
-                    handleFilterChange("hasLaptop", e.target.value)
+                    handleFilterChange("hasComputer", e.target.value)
                   }
                   className="rounded-lg bg-[#020617]/70 border border-white/10 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  <option value="">Laptop: All</option>
-                  <option value="true">Has laptop</option>
-                  <option value="false">No laptop</option>
+                  <option value="">Computer: All</option>
+                  <option value="true">Has computer</option>
+                  <option value="false">No computer</option>
                 </select>
 
                 <select
@@ -180,7 +247,7 @@ function HackathonRegistrations() {
                   }
                   className="rounded-lg bg-[#020617]/70 border border-white/10 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  <option value="">Study at Rise? (All)</option>
+                  <option value="">Livate Student? (All)</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
                 </select>
@@ -202,6 +269,9 @@ function HackathonRegistrations() {
                   <thead className="bg-[#020617]/50 border-b border-white/10">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Hackathon
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                         Name
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -220,10 +290,10 @@ function HackathonRegistrations() {
                         MERN Level
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        Laptop
+                        Computer
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        Study Rise?
+                        Livate Student?
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                         Created
@@ -239,6 +309,9 @@ function HackathonRegistrations() {
                         key={reg._id}
                         className="hover:bg-white/5 transition-colors"
                       >
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                          {getHackathonName(reg)}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-white font-medium">
                           {reg.fullName}
                         </td>
@@ -268,12 +341,12 @@ function HackathonRegistrations() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              reg.hasLaptop
+                              (reg.hasComputer ?? reg.hasLaptop)
                                 ? "bg-green-500/20 text-green-300"
                                 : "bg-red-500/20 text-red-300"
                             }`}
                           >
-                            {reg.hasLaptop ? "Yes" : "No"}
+                            {(reg.hasComputer ?? reg.hasLaptop) ? "Yes" : "No"}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -318,7 +391,6 @@ function HackathonRegistrations() {
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 }

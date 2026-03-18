@@ -2,6 +2,16 @@ const mongoose = require("mongoose");
 
 const registrationSchema = new mongoose.Schema(
   {
+    hackathonId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hackathon",
+      required: true,
+    },
+    hackathonTitle: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     fullName: {
       type: String,
       required: true,
@@ -15,6 +25,11 @@ const registrationSchema = new mongoose.Schema(
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
     },
     whatsappNumber: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    city: {
       type: String,
       required: true,
       trim: true,
@@ -38,7 +53,7 @@ const registrationSchema = new mongoose.Schema(
       enum: ["Beginner", "Intermediate", "Advanced"],
       required: true,
     },
-    hasLaptop: {
+    hasComputer: {
       type: Boolean,
       required: true,
     },
