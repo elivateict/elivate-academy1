@@ -7,7 +7,7 @@ function Home () {
   return <>
   <HeroSection />
   <ImpactHome />
-  <CoursesHome />
+  <CoursesHome /> 
   <Choose />
   </>
 }
