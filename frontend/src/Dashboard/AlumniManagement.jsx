@@ -54,9 +54,17 @@ function AlumniManagement() {
       return imagePath;
     }
 
-    const normalizedPath = String(imagePath).replace(/\\/g, "/");
+    const normalizedPath = String(imagePath).replace(/\\/g, "/").trim();
 
-    return apiUrl(normalizedPath);
+    if (normalizedPath.startsWith("/uploads/")) {
+      return apiUrl(normalizedPath);
+    }
+
+    if (normalizedPath.startsWith("uploads/")) {
+      return apiUrl(`/${normalizedPath}`);
+    }
+
+    return apiUrl(`/uploads/alumni/${normalizedPath.split("/").pop()}`);
   };
 
   const resetForm = () => {

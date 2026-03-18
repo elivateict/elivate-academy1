@@ -4,12 +4,52 @@ const Alumni = require("../model/alumniModel");
 
 const uploadsRoot = path.join(__dirname, "..", "uploads");
 
+const normalizeImagePath = (imagePath = "") => {
+  if (!imagePath) {
+    return "";
+  }
+
+  const normalizedPath = String(imagePath).replace(/\\/g, "/").trim();
+
+  if (/^(https?:\/\/|data:|blob:)/i.test(normalizedPath)) {
+    return normalizedPath;
+  }
+
+  if (normalizedPath.startsWith("/uploads/")) {
+    return normalizedPath;
+  }
+
+  if (normalizedPath.startsWith("uploads/")) {
+    return `/${normalizedPath}`;
+  }
+
+  const fileName = path.basename(normalizedPath);
+  return `/uploads/alumni/${fileName}`;
+};
+
+const serializeAlumni = (alumniDocument) => {
+  if (!alumniDocument) {
+    return alumniDocument;
+  }
+
+  const plainDocument =
+    typeof alumniDocument.toObject === "function"
+      ? alumniDocument.toObject()
+      : { ...alumniDocument };
+
+  plainDocument.image = normalizeImagePath(plainDocument.image);
+
+  return plainDocument;
+};
+
 const removeUploadedFile = (imagePath) => {
-  if (!imagePath || !imagePath.startsWith("/uploads/")) {
+  const normalizedImagePath = normalizeImagePath(imagePath);
+
+  if (!normalizedImagePath || !normalizedImagePath.startsWith("/uploads/")) {
     return;
   }
 
-  const normalizedPath = imagePath.replace(/^\/+/, "");
+  const normalizedPath = normalizedImagePath.replace(/^\/+/, "");
   const absolutePath = path.join(__dirname, "..", normalizedPath);
 
   if (absolutePath.startsWith(uploadsRoot) && fs.existsSync(absolutePath)) {
@@ -47,7 +87,7 @@ const createAlumni = async (req, res) => {
       name,
       role,
       course,
-      image: buildImagePath(req.file),
+      image: normalizeImagePath(buildImagePath(req.file)),
     });
 
     const savedAlumni = await alumni.save();
@@ -55,7 +95,7 @@ const createAlumni = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Alumni created successfully",
-      data: savedAlumni,
+      data: serializeAlumni(savedAlumni),
     });
   } catch (error) {
     if (req.file) {
@@ -77,7 +117,7 @@ const getAllAlumni = async (req, res) => {
     res.status(200).json({
       success: true,
       count: alumni.length,
-      data: alumni,
+      data: alumni.map((item) => serializeAlumni(item)),
     });
   } catch (error) {
     res.status(500).json({
@@ -101,7 +141,7 @@ const getAlumniById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: alumni,
+      data: serializeAlumni(alumni),
     });
   } catch (error) {
     res.status(500).json({
@@ -142,8 +182,8 @@ const updateAlumni = async (req, res) => {
 
     const previousImage = existingAlumni.image;
     const nextImagePath = req.file
-      ? buildImagePath(req.file)
-      : existingAlumni.image;
+      ? normalizeImagePath(buildImagePath(req.file))
+      : normalizeImagePath(existingAlumni.image);
 
     existingAlumni.name = name;
     existingAlumni.role = role;
@@ -159,7 +199,7 @@ const updateAlumni = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Alumni updated successfully",
-      data: updatedAlumni,
+      data: serializeAlumni(updatedAlumni),
     });
   } catch (error) {
     if (req.file) {
@@ -190,7 +230,7 @@ const deleteAlumni = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Alumni deleted successfully",
-      data: deletedAlumni,
+      data: serializeAlumni(deletedAlumni),
     });
   } catch (error) {
     res.status(500).json({
@@ -207,4 +247,5 @@ module.exports = {
   getAlumniById,
   updateAlumni,
   deleteAlumni,
+  normalizeImagePath,
 };
