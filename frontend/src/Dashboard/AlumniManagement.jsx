@@ -50,7 +50,13 @@ function AlumniManagement() {
       return "";
     }
 
-    return /^https?:\/\//i.test(imagePath) ? imagePath : apiUrl(imagePath);
+    if (/^(https?:\/\/|data:|blob:)/i.test(imagePath)) {
+      return imagePath;
+    }
+
+    const normalizedPath = String(imagePath).replace(/\\/g, "/");
+
+    return apiUrl(normalizedPath);
   };
 
   const resetForm = () => {
