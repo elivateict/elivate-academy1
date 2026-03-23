@@ -135,7 +135,7 @@ function DashboardLogin() {
             </button>
           </form>
 
-          <p className="text-sm text-[#5f7d87]">
+          {/* <p className="text-sm text-[#5f7d87]">
             Need a dashboard account?{" "}
             <Link
               to="/dashboard/register"
@@ -143,7 +143,7 @@ function DashboardLogin() {
             >
               Register here
             </Link>
-          </p>
+          </p> */}
         </section>
       </div>
     </div>
