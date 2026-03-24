@@ -15,7 +15,7 @@ function DashboardLogin() {
   const [loading, setLoading] = useState(false);
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/waji" replace />;
   }
 
   const handleChange = (event) => {
@@ -33,7 +33,7 @@ function DashboardLogin() {
 
     try {
       await login(formData);
-      const nextPath = location.state?.from?.pathname || "/dashboard";
+      const nextPath = location.state?.from?.pathname || "/waji";
       navigate(nextPath, { replace: true });
     } catch (error) {
       setMessage(error.message || "Could not sign in.");
@@ -138,7 +138,7 @@ function DashboardLogin() {
           {/* <p className="text-sm text-[#5f7d87]">
             Need a dashboard account?{" "}
             <Link
-              to="/dashboard/register"
+              to="/waji/register"
               className="font-semibold text-[#1d6273] transition hover:text-[#144a58]"
             >
               Register here

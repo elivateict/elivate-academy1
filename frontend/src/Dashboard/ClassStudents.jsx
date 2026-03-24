@@ -241,7 +241,7 @@ function ClassStudents() {
           {/* Header */}
           <div className="mb-8">
             <button
-              onClick={() => navigate("/dashboard/classes")}
+              onClick={() => navigate("/waji/classes")}
               className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
             >
               <svg
@@ -664,7 +664,7 @@ function ClassStudents() {
                           <div className="flex gap-3">
                             <button
                               onClick={() =>
-                                navigate(`/dashboard/students/${student._id}`)
+                                navigate(`/waji/students/${student._id}`)
                               }
                               className="text-indigo-400 hover:text-indigo-300"
                             >

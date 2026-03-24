@@ -1,7 +1,7 @@
 export const dashboardNavigation = [
   {
     label: "Dashboard",
-    path: "/dashboard",
+    path: "/waji",
     description: "Overview, growth, and quick actions",
     icon: (
       <path
@@ -14,7 +14,7 @@ export const dashboardNavigation = [
   },
   {
     label: "All Students",
-    path: "/dashboard/students",
+    path: "/waji/students",
     description: "Student records and filters",
     icon: (
       <path
@@ -27,7 +27,7 @@ export const dashboardNavigation = [
   },
   {
     label: "Add Student",
-    path: "/dashboard/create",
+    path: "/waji/create",
     description: "Create a new student record",
     icon: (
       <path
@@ -40,7 +40,7 @@ export const dashboardNavigation = [
   },
   {
     label: "Classes",
-    path: "/dashboard/classes",
+    path: "/waji/classes",
     description: "Sessions and registration control",
     icon: (
       <path
@@ -53,7 +53,7 @@ export const dashboardNavigation = [
   },
   {
     label: "Attendance",
-    path: "/dashboard/attendance",
+    path: "/waji/attendance",
     description: "Daily attendance and export",
     icon: (
       <path
@@ -66,7 +66,7 @@ export const dashboardNavigation = [
   },
   {
     label: "Alumni",
-    path: "/dashboard/alumni",
+    path: "/waji/alumni",
     description: "Public alumni showcase",
     icon: (
       <path
@@ -79,7 +79,7 @@ export const dashboardNavigation = [
   },
   {
     label: "Hackathons",
-    path: "/dashboard/hackathons",
+    path: "/waji/hackathons",
     description: "Create and publish hackathons",
     icon: (
       <path
@@ -92,7 +92,7 @@ export const dashboardNavigation = [
   },
   {
     label: "Registrations",
-    path: "/dashboard/hackathon-registrations",
+    path: "/waji/hackathon-registrations",
     description: "Hackathon applications and review",
     icon: (
       <path
@@ -105,7 +105,7 @@ export const dashboardNavigation = [
   },
   {
     label: "Contacts",
-    path: "/dashboard/contacts",
+    path: "/waji/contacts",
     description: "Inbox and contact messages",
     icon: (
       <path
@@ -125,21 +125,21 @@ export function getDashboardMeta(pathname) {
     return exactMatch;
   }
 
-  if (pathname.startsWith("/dashboard/students/")) {
+  if (pathname.startsWith("/waji/students/")) {
     return {
       label: "Student Details",
       description: "Review and update a student profile",
     };
   }
 
-  if (pathname.startsWith("/dashboard/classes/")) {
+  if (pathname.startsWith("/waji/classes/")) {
     return {
       label: "Class Students",
       description: "Manage students inside one class",
     };
   }
 
-  if (pathname.startsWith("/dashboard/hackathon-registrations/")) {
+  if (pathname.startsWith("/waji/hackathon-registrations/")) {
     return {
       label: "Registration Details",
       description: "Review one hackathon application",

@@ -32,8 +32,8 @@ function Sidebar({ onNavigate }) {
           <nav className="space-y-1.5">
             {dashboardNavigation.map((item) => {
               const exact =
-                item.path === "/dashboard"
-                  ? location.pathname === "/dashboard"
+                item.path === "/waji"
+                  ? location.pathname === "/waji"
                   : location.pathname.startsWith(item.path);
 
               return (

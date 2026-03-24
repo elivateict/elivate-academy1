@@ -141,7 +141,7 @@ function ClassManagement() {
   };
 
   const handleViewStudents = (className) => {
-    navigate(`/dashboard/classes/${encodeURIComponent(className)}/students`);
+    navigate(`/waji/classes/${encodeURIComponent(className)}/students`);
   };
 
   const handleToggleRegistration = async (id, currentStatus) => {

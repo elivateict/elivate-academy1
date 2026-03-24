@@ -130,7 +130,7 @@ function ReadStudent() {
 
       if (response.ok) {
         alert("Student deleted successfully!");
-        navigate("/dashboard/students");
+        navigate("/waji/students");
       } else {
         alert(data.message || "Error deleting student");
       }
@@ -166,7 +166,7 @@ function ReadStudent() {
           <div className="mb-8 flex items-center justify-between">
             <div>
               <button
-                onClick={() => navigate("/dashboard/students")}
+                onClick={() => navigate("/waji/students")}
                 className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
               >
                 <svg

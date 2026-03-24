@@ -96,7 +96,7 @@ function StudentCreate() {
           text: "Student registered successfully!",
         });
         setTimeout(() => {
-          navigate("/dashboard/students");
+          navigate("/waji/students");
         }, 1500);
       } else {
         setMessage({
@@ -119,7 +119,7 @@ function StudentCreate() {
       <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <button
-              onClick={() => navigate("/dashboard/students")}
+              onClick={() => navigate("/waji/students")}
               className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
             >
               <svg
@@ -318,7 +318,7 @@ function StudentCreate() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate("/dashboard/students")}
+                  onClick={() => navigate("/waji/students")}
                   className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all"
                 >
                   Cancel

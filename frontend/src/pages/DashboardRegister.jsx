@@ -16,7 +16,7 @@ function DashboardRegister() {
   const [loading, setLoading] = useState(false);
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/waji" replace />;
   }
 
   const handleChange = (event) => {
@@ -40,7 +40,7 @@ function DashboardRegister() {
 
     try {
       await register(formData);
-      navigate("/dashboard", { replace: true });
+      navigate("/waji", { replace: true });
     } catch (error) {
       setMessage(error.message || "Could not create the dashboard account.");
     } finally {
@@ -163,7 +163,7 @@ function DashboardRegister() {
           <p className="text-sm text-[#5f7d87]">
             Already created one?{" "}
             <Link
-              to="/dashboard/login"
+              to="/waji/login"
               className="font-semibold text-[#1d6273] transition hover:text-[#144a58]"
             >
               Go to login

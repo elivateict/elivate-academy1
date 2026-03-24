@@ -109,17 +109,17 @@ function Dashboard() {
     {
       title: "Add Student",
       text: "Create a new student record and assign the correct class.",
-      path: "/dashboard/create",
+      path: "/waji/create",
     },
     {
       title: "Manage Classes",
       text: "Open or close registration and organize current sessions.",
-      path: "/dashboard/classes",
+      path: "/waji/classes",
     },
     {
       title: "Hackathons",
       text: "Create new hackathons and review registrations.",
-      path: "/dashboard/hackathons",
+      path: "/waji/hackathons",
     },
   ];
 
@@ -185,7 +185,7 @@ function Dashboard() {
                 Recent students
               </h3>
             </div>
-            <Link to="/dashboard/students" className="dashboard-secondary-button">
+            <Link to="/waji/students" className="dashboard-secondary-button">
               View all
             </Link>
           </div>
@@ -203,7 +203,7 @@ function Dashboard() {
               recentStudents.map((student) => (
                 <Link
                   key={student._id}
-                  to={`/dashboard/students/${student._id}`}
+                  to={`/waji/students/${student._id}`}
                   className="block rounded-[1.15rem] border border-[#d7e8ec] bg-[#f8fcfd] px-4 py-3 transition hover:-translate-y-[1px] hover:shadow-[0_16px_30px_rgba(20,74,88,0.08)]"
                 >
                   <div className="flex items-start justify-between gap-4">
@@ -237,7 +237,7 @@ function Dashboard() {
                 Quick breakdown
               </h3>
             </div>
-            <Link to="/dashboard/students" className="dashboard-secondary-button">
+            <Link to="/waji/students" className="dashboard-secondary-button">
               Open list
             </Link>
           </div>
@@ -333,7 +333,7 @@ function Dashboard() {
                   <tr key={student._id} className="border-b border-[#eef5f7] last:border-b-0">
                     <td className="px-5 py-4">
                       <Link
-                        to={`/dashboard/students/${student._id}`}
+                        to={`/waji/students/${student._id}`}
                         className="block font-semibold text-[#144a58] transition hover:text-[#1d6273]"
                       >
                         {student.fullName}

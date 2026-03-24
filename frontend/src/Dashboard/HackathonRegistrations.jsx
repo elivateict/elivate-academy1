@@ -369,7 +369,7 @@ function HackathonRegistrations() {
                           <button
                             onClick={() =>
                               navigate(
-                                `/dashboard/hackathon-registrations/${reg._id}`
+                                `/waji/hackathon-registrations/${reg._id}`
                               )
                             }
                             className="text-indigo-400 hover:text-indigo-300 mr-3"

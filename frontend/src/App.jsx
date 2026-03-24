@@ -30,11 +30,11 @@ import { Routes, Route } from "react-router-dom"
 function App () {
   return <>
   <Routes>
-      {/* <Route path="/dashboard/register" element={<DashboardRegister />} /> */}
-      <Route path="/dashboard/login" element={<DashboardLogin />} />
+      {/* <Route path="/waji/register" element={<DashboardRegister />} /> */}
+      <Route path="/waji/login" element={<DashboardLogin />} />
 
       <Route element={<DashboardProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardShell />}>
+        <Route path="/waji" element={<DashboardShell />}>
           <Route index element={<Dashboard />} />
           <Route path="students" element={<StudentsList />} />
           <Route path="students/:id" element={<ReadStudent />} />

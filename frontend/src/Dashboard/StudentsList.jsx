@@ -120,7 +120,7 @@ function StudentsList() {
               </p>
             </div>
             <button
-              onClick={() => navigate("/dashboard/create")}
+              onClick={() => navigate("/waji/create")}
               className="px-6 py-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 text-white rounded-lg font-semibold hover:brightness-110 transition-all flex items-center gap-2"
             >
               <svg
@@ -345,7 +345,7 @@ function StudentsList() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
                             onClick={() =>
-                              navigate(`/dashboard/students/${student._id}`)
+                              navigate(`/waji/students/${student._id}`)
                             }
                             className="text-indigo-400 hover:text-indigo-300"
                           >

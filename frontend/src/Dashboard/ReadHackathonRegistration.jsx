@@ -155,7 +155,7 @@ function ReadHackathonRegistration() {
     <div className="dashboard-page">
       <div className="max-w-3xl mx-auto">
           <button
-            onClick={() => navigate("/dashboard/hackathon-registrations")}
+            onClick={() => navigate("/waji/hackathon-registrations")}
             className="text-gray-400 hover:text-white mb-6 flex items-center gap-2"
           >
             <svg

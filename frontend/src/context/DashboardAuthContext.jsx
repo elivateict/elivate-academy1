@@ -244,7 +244,7 @@ export function DashboardProtectedRoute() {
   if (!isAuthenticated) {
     return (
       <Navigate
-        to="/dashboard/login"
+        to="/waji/login"
         replace
         state={{ from: location }}
       />
