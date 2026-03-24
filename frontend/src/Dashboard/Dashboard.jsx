@@ -107,6 +107,11 @@ function Dashboard() {
 
   const quickActions = [
     {
+      title: "Manage Users",
+      text: "Open dashboard accounts, suspend access, or delete a user.",
+      path: "/waji/manage-users",
+    },
+    {
       title: "Add Student",
       text: "Create a new student record and assign the correct class.",
       path: "/waji/create",
@@ -296,7 +301,7 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 lg:grid-cols-2 2xl:grid-cols-3">
+          <div className="mt-5 grid gap-3 lg:grid-cols-2 2xl:grid-cols-4">
             {quickActions.map((action) => (
               <Link
                 key={action.path}

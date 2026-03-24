@@ -13,6 +13,19 @@ export const dashboardNavigation = [
     ),
   },
   {
+    label: "Manage Users",
+    path: "/waji/manage-users",
+    description: "View, suspend, activate, and delete dashboard users",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.8}
+        d="M16.5 18.75v-.75A3.75 3.75 0 0 0 12.75 14.25h-1.5A3.75 3.75 0 0 0 7.5 18v.75M15 7.875a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm5.25 10.875v-.75A3 3 0 0 0 17.25 15M16.5 5.625a2.625 2.625 0 1 1 0 5.25"
+      />
+    ),
+  },
+  {
     label: "All Students",
     path: "/waji/students",
     description: "Student records and filters",

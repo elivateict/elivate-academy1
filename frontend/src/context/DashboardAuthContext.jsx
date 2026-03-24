@@ -8,21 +8,9 @@ import {
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { apiUrl } from "../utils/api";
 
-const DASHBOARD_USERS_KEY = "elivate_dashboard_users";
 const DASHBOARD_SESSION_KEY = "elivate_dashboard_session";
 
 const DashboardAuthContext = createContext(null);
-
-function readStoredUsers() {
-  try {
-    const rawValue = window.localStorage.getItem(DASHBOARD_USERS_KEY);
-    const users = rawValue ? JSON.parse(rawValue) : [];
-    return Array.isArray(users) ? users : [];
-  } catch (error) {
-    console.error("Error reading stored dashboard users:", error);
-    return [];
-  }
-}
 
 function readStoredSession() {
   try {
@@ -31,14 +19,6 @@ function readStoredSession() {
   } catch (error) {
     console.error("Error reading stored dashboard session:", error);
     return null;
-  }
-}
-
-function persistLegacyUsers(users) {
-  try {
-    window.localStorage.setItem(DASHBOARD_USERS_KEY, JSON.stringify(users));
-  } catch (error) {
-    console.error("Error saving legacy dashboard users:", error);
   }
 }
 
@@ -89,6 +69,49 @@ async function loginDashboardUser(payload) {
   return data.data;
 }
 
+async function fetchDashboardUsers() {
+  const response = await fetch(apiUrl("/api/dashboard-auth/users"));
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Could not load dashboard users.");
+  }
+
+  return data.data || [];
+}
+
+async function updateDashboardUserStatus(userId, isSuspended) {
+  const response = await fetch(apiUrl(`/api/dashboard-auth/users/${userId}/status`), {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ isSuspended }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Could not update dashboard user.");
+  }
+
+  return data.data;
+}
+
+async function deleteDashboardUser(userId) {
+  const response = await fetch(apiUrl(`/api/dashboard-auth/users/${userId}`), {
+    method: "DELETE",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Could not delete dashboard user.");
+  }
+
+  return data;
+}
+
 export function DashboardAuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [ready, setReady] = useState(false);
@@ -104,6 +127,7 @@ export function DashboardAuthProvider({ children }) {
           id: user.id,
           email: user.email,
           fullName: user.fullName,
+          isSuspended: Boolean(user.isSuspended),
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         })
@@ -115,7 +139,6 @@ export function DashboardAuthProvider({ children }) {
 
   useEffect(() => {
     const bootstrapAuth = async () => {
-      const storedUsers = readStoredUsers();
       const storedSession = readStoredSession();
 
       if (storedSession?.email) {
@@ -123,29 +146,26 @@ export function DashboardAuthProvider({ children }) {
       }
 
       try {
-        for (const localUser of storedUsers) {
-          if (!localUser?.email || !localUser?.password || !localUser?.fullName) {
-            continue;
-          }
-
-          try {
-            await registerDashboardUser({
-              fullName: localUser.fullName,
-              email: localUser.email,
-              password: localUser.password,
-            });
-          } catch (error) {
-            if (!String(error.message || "").includes("already registered")) {
-              console.error("Error syncing local dashboard user:", error);
-            }
-          }
-        }
-
         const status = await fetchDashboardAuthStatus();
         setHasRegisteredUsers(Boolean(status.hasUsers));
+
+        if (storedSession?.id && status.hasUsers) {
+          try {
+            const users = await fetchDashboardUsers();
+            const matchedUser = users.find((user) => user.id === storedSession.id);
+
+            if (!matchedUser || matchedUser.isSuspended) {
+              persistSession(null);
+            } else {
+              persistSession(matchedUser);
+            }
+          } catch (error) {
+            console.error("Error validating stored dashboard session:", error);
+          }
+        }
       } catch (error) {
         console.error("Error loading dashboard auth status:", error);
-        setHasRegisteredUsers(storedUsers.length > 0);
+        setHasRegisteredUsers(Boolean(storedSession?.email));
       } finally {
         setReady(true);
       }
@@ -161,19 +181,6 @@ export function DashboardAuthProvider({ children }) {
       password,
     });
 
-    const storedUsers = readStoredUsers();
-    const nextUsers = [
-      ...storedUsers.filter(
-        (storedUser) => storedUser?.email?.toLowerCase() !== user.email?.toLowerCase()
-      ),
-      {
-        fullName,
-        email: user.email,
-        password,
-      },
-    ];
-
-    persistLegacyUsers(nextUsers);
     setHasRegisteredUsers(true);
     persistSession(user);
 
@@ -192,6 +199,43 @@ export function DashboardAuthProvider({ children }) {
     return user;
   };
 
+  const getUsers = async () => fetchDashboardUsers();
+
+  const setUserSuspended = async (userId, isSuspended) => {
+    const user = await updateDashboardUserStatus(userId, isSuspended);
+
+    if (currentUser?.id === user.id) {
+      if (user.isSuspended) {
+        persistSession(null);
+      } else {
+        persistSession(user);
+      }
+    }
+
+    return user;
+  };
+
+  const removeUser = async (userId) => {
+    const isCurrentUser = currentUser?.id === userId;
+
+    await deleteDashboardUser(userId);
+
+    if (isCurrentUser) {
+      persistSession(null);
+    }
+
+    try {
+      const status = await fetchDashboardAuthStatus();
+      setHasRegisteredUsers(Boolean(status.hasUsers));
+    } catch (error) {
+      console.error("Error refreshing dashboard auth status:", error);
+    }
+
+    return {
+      deletedCurrentUser: isCurrentUser,
+    };
+  };
+
   const logout = () => {
     persistSession(null);
   };
@@ -204,6 +248,9 @@ export function DashboardAuthProvider({ children }) {
       hasRegisteredUsers,
       register,
       login,
+      getUsers,
+      setUserSuspended,
+      removeUser,
       logout,
     }),
     [currentUser, ready, hasRegisteredUsers]

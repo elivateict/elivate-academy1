@@ -22,6 +22,10 @@ const dashboardUserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isSuspended: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
