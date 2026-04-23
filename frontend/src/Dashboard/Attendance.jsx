@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { apiUrl } from "../utils/api";
 
 function Attendance() {
@@ -18,13 +18,6 @@ function Attendance() {
     fetchClasses();
   }, []);
 
-  useEffect(() => {
-    if (selectedClass) {
-      fetchStudents();
-      fetchAttendanceForDate();
-    }
-  }, [selectedClass, attendanceDate]);
-
   const fetchClasses = async () => {
     try {
       const response = await fetch(apiUrl("/api/classes"));
@@ -37,7 +30,7 @@ function Attendance() {
     }
   };
 
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -66,9 +59,9 @@ function Attendance() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedClass]);
 
-  const fetchAttendanceForDate = async () => {
+  const fetchAttendanceForDate = useCallback(async () => {
     if (!selectedClass || !attendanceDate) return;
 
     try {
@@ -89,7 +82,14 @@ function Attendance() {
     } catch (error) {
       console.error("Error fetching attendance:", error);
     }
-  };
+  }, [attendanceDate, selectedClass]);
+
+  useEffect(() => {
+    if (selectedClass) {
+      fetchStudents();
+      fetchAttendanceForDate();
+    }
+  }, [selectedClass, attendanceDate, fetchStudents, fetchAttendanceForDate]);
 
   const fetchAttendanceSummary = async () => {
     if (!selectedClass) return;
@@ -178,7 +178,7 @@ function Attendance() {
           text: data.message || "Error marking attendance",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -251,7 +251,7 @@ function Attendance() {
       setTimeout(() => {
         setMessage({ type: "", text: "" });
       }, 3000);
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Error exporting to Google Sheets. Please try again.",

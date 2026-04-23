@@ -100,7 +100,7 @@ function HackathonRegistrations() {
       } else {
         alert(data.message || "Error deleting registration");
       }
-    } catch (error) {
+    } catch {
       alert("Network error. Please try again.");
     }
   };
@@ -247,7 +247,7 @@ function HackathonRegistrations() {
                   }
                   className="rounded-lg bg-[#020617]/70 border border-white/10 px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  <option value="">Livate Student? (All)</option>
+                  <option value="">PlusAcademy Student? (All)</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
                 </select>
@@ -293,7 +293,7 @@ function HackathonRegistrations() {
                         Computer
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        Livate Student?
+                        PlusAcademy Student?
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                         Created

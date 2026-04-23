@@ -133,7 +133,7 @@ function HackathonManagement() {
           text: data.message || "Error saving hackathon",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -189,7 +189,7 @@ function HackathonManagement() {
           text: data.message || "Error updating registration status",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -218,7 +218,7 @@ function HackathonManagement() {
       } else {
         alert(data.message || "Error deleting hackathon");
       }
-    } catch (error) {
+    } catch {
       alert("Network error. Please try again.");
     }
   };

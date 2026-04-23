@@ -17,17 +17,26 @@ const app = express();
 const PORT = Number(process.env.PORT) || 5000;
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/elivateacademy";
+const normalizeOrigin = (value = "") => value.trim().replace(/\/+$/, "");
 const allowedOrigins = (
   process.env.CORS_ORIGINS ||
-  "https://elivateacademy.com,https://www.elivateacademy.com,http://localhost:5173,http://127.0.0.1:5173"
+  [
+    "https://plusacademyhub.com",
+    "https://www.plusacademyhub.com",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
+  ].join(",")
 )
   .split(",")
-  .map((origin) => origin.trim())
+  .map(normalizeOrigin)
   .filter(Boolean);
+const allowedOriginsSet = new Set(allowedOrigins);
 
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOriginsSet.has(normalizeOrigin(origin))) {
       return callback(null, true);
     }
 
@@ -35,6 +44,7 @@ const corsOptions = {
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
 };
 
 app.use(express.json());

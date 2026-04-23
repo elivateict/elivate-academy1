@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { apiUrl } from "../../utils/api";
+import MagneticButton from "../Immersive/MagneticButton";
+import SectionHeader from "../Immersive/SectionHeader";
 
 function Contact1() {
   const [formData, setFormData] = useState({
@@ -64,7 +66,7 @@ function Contact1() {
           text: data.message || "Failed to send message. Please try again.",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please check your connection and try again.",
@@ -75,106 +77,123 @@ function Contact1() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
-      <div className="w-full max-w-lg rounded-2xl border border-[#d8edf1] bg-[#fcfeff] p-8 shadow-[0_24px_60px_rgba(29,98,115,0.08)]">
-        <h1 className="mb-1 text-2xl font-bold text-[#1d6273]">Contact Us</h1>
-        <p className="mb-6 text-sm text-slate-500">
-          Have a question? Send us a message.
-        </p>
-
-        {message.text && (
-          <div
-            className={`mb-6 rounded-lg p-4 ${
-              message.type === "success"
-                ? "border border-green-500/40 bg-green-500/10 text-green-700"
-                : "border border-red-500/40 bg-red-500/10 text-red-700"
-            }`}
-          >
-            <p className="text-sm">{message.text}</p>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
+    <section className="immersive-section">
+      <div className="immersive-container">
+        <div className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <label className="mb-1 block text-sm text-slate-600">Full Name *</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your name"
-              className="w-full rounded-lg border border-[#d8edf1] bg-white px-4 py-2.5 text-[#144a58] focus:border-[#1d6273] focus:outline-none"
-              required
-            />
+            <SectionHeader align="left" eyebrow="Contact Us" title="Have a question? Send us a message." />
+            <div className="cinematic-panel p-6 text-sm leading-relaxed text-white/64" data-cinematic>
+              <p>
+                Reach the PlusAcademy team with questions about programs,
+                admissions, partnerships, and upcoming learning opportunities.
+              </p>
+              <div className="mt-6 grid gap-3">
+                <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                  <p className="text-[#4FFFEA]">Programs</p>
+                  <p className="mt-1 text-white/62">Full-Stack Development, Mobile App Development, IoT, and Basic Computer Skills.</p>
+                </div>
+                <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                  <p className="text-[#4FFFEA]">Response</p>
+                  <p className="mt-1 text-white/62">We will get back to you soon.</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm text-slate-600">
-              Email Address *
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className="w-full rounded-lg border border-[#d8edf1] bg-white px-4 py-2.5 text-[#144a58] focus:border-[#1d6273] focus:outline-none"
-              required
-            />
-          </div>
+          <div className="cinematic-panel p-6 md:p-8" data-cinematic>
+            {message.text && (
+              <div
+                className={`mb-6 rounded-lg border p-4 ${
+                  message.type === "success"
+                    ? "border-emerald-300/35 bg-emerald-400/10 text-emerald-200"
+                    : "border-rose-300/35 bg-rose-400/10 text-rose-200"
+                }`}
+              >
+                <p className="text-sm">{message.text}</p>
+              </div>
+            )}
 
-          <div>
-            <label className="mb-1 block text-sm text-slate-600">
-              Phone Number (Optional)
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+25261xxxxxxx"
-              className="w-full rounded-lg border border-[#d8edf1] bg-white px-4 py-2.5 text-[#144a58] focus:border-[#1d6273] focus:outline-none"
-            />
-          </div>
+            <form onSubmit={handleSubmit} className="cinematic-form space-y-5">
+              <div>
+                <label className="mb-2 block text-sm text-white/72">Full Name *</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your name"
+                  className="px-4 py-3"
+                  required
+                />
+              </div>
 
-          <div>
-            <label className="mb-1 block text-sm text-slate-600">Subject *</label>
-            <input
-              type="text"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              placeholder="What is this about?"
-              className="w-full rounded-lg border border-[#d8edf1] bg-white px-4 py-2.5 text-[#144a58] focus:border-[#1d6273] focus:outline-none"
-              required
-            />
-          </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/72">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Email"
+                  className="px-4 py-3"
+                  required
+                />
+              </div>
 
-          <div>
-            <label className="mb-1 block text-sm text-slate-600">Message *</label>
-            <textarea
-              rows="4"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Write your message..."
-              className="w-full resize-none rounded-lg border border-[#d8edf1] bg-white px-4 py-2.5 text-[#144a58] focus:border-[#1d6273] focus:outline-none"
-              required
-            />
-          </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/72">
+                  Phone Number (Optional)
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="+25261xxxxxxx"
+                  className="px-4 py-3"
+                />
+              </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`mt-4 w-full rounded-xl bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] py-3 font-semibold text-white transition hover:brightness-110 ${
-              loading ? "cursor-not-allowed opacity-70" : ""
-            }`}
-          >
-            {loading ? "Sending..." : "Send Message"}
-          </button>
-        </form>
+              <div>
+                <label className="mb-2 block text-sm text-white/72">Subject *</label>
+                <input
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  placeholder="What is this about?"
+                  className="px-4 py-3"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm text-white/72">Message *</label>
+                <textarea
+                  rows="4"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="Write your message..."
+                  className="resize-none px-4 py-3"
+                  required
+                />
+              </div>
+
+              <MagneticButton
+                type="submit"
+                disabled={loading}
+                className="mt-2 w-full"
+              >
+                {loading ? "Sending..." : "Send Message"}
+              </MagneticButton>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 

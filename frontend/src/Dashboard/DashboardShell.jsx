@@ -5,12 +5,30 @@ import BrandLogo from "../Components/BrandLogo";
 import { getDashboardMeta } from "./dashboardNavigation.jsx";
 import { useDashboardAuth } from "../context/DashboardAuthContext";
 
-const DASHBOARD_SIDEBAR_KEY = "elivate_dashboard_sidebar_collapsed";
+const DASHBOARD_SIDEBAR_KEY = "plusacademy_dashboard_sidebar_collapsed";
+const LEGACY_DASHBOARD_SIDEBAR_KEY = "elivate_dashboard_sidebar_collapsed";
+
+function readStoredSidebarState() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    const storedValue =
+      window.localStorage.getItem(DASHBOARD_SIDEBAR_KEY) ??
+      window.localStorage.getItem(LEGACY_DASHBOARD_SIDEBAR_KEY);
+
+    return storedValue === "true";
+  } catch (error) {
+    console.error("Error reading dashboard sidebar state:", error);
+    return false;
+  }
+}
 
 function DashboardShell() {
   const location = useLocation();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(readStoredSidebarState);
   const [toolbarSearch, setToolbarSearch] = useState("");
   const { currentUser, logout } = useDashboardAuth();
 
@@ -21,19 +39,11 @@ function DashboardShell() {
 
   useEffect(() => {
     try {
-      const savedState = window.localStorage.getItem(DASHBOARD_SIDEBAR_KEY);
-      setSidebarCollapsed(savedState === "true");
-    } catch (error) {
-      console.error("Error reading dashboard sidebar state:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
       window.localStorage.setItem(
         DASHBOARD_SIDEBAR_KEY,
         sidebarCollapsed ? "true" : "false"
       );
+      window.localStorage.removeItem(LEGACY_DASHBOARD_SIDEBAR_KEY);
     } catch (error) {
       console.error("Error saving dashboard sidebar state:", error);
     }
@@ -109,7 +119,7 @@ function DashboardShell() {
 
               <div className="hidden lg:block">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4eaebe]">
-                  Livate Academy
+                  PlusAcademy
                 </p>
                 <h1 className="text-2xl font-black text-[#144a58]">
                   {pageMeta.label}

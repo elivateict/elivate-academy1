@@ -90,7 +90,7 @@ function HeroEcosystemGraphic() {
       <div className="relative rounded-[1.7rem] border border-white/10 bg-black/18 px-4 py-4 backdrop-blur-sm lg:px-5">
         <div className="rounded-[1.25rem] border border-white/15 bg-white/10 px-4 py-4 text-center shadow-[0_0_24px_rgba(126,216,230,0.1)] lg:px-6">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#baf1f7]">
-            The Advanced Livate Academy Ecosystem
+            The Advanced PlusAcademy Ecosystem
           </p>
           <h3 className="mt-2 text-lg font-extrabold leading-tight text-white lg:text-[1.7rem]">
             Your Data, Connected And Understandable
@@ -138,7 +138,7 @@ function HeroEcosystemGraphic() {
               Central Data Core
             </span>
             <span className="mt-3 text-2xl font-extrabold text-white lg:text-[2rem]">
-              Livate Data
+              Plus Data
             </span>
             <span className="mt-1 text-sm text-[#d7f7fb]">
               Programs, skills, outcomes and growth paths connected

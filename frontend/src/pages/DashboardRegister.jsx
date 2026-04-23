@@ -62,7 +62,7 @@ function DashboardRegister() {
           </h1>
           <p className="mt-4 max-w-xl text-base leading-8 text-[#5f7d87]">
             After registration, the new user is signed in immediately and can
-            open the protected Livate dashboard.
+            open the protected PlusAcademy dashboard.
           </p>
 
           <div className="dashboard-auth__highlights">
@@ -119,7 +119,7 @@ function DashboardRegister() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="admin@elivateacademy.com"
+                placeholder="admin@plusacademyhub.com"
                 className="dashboard-auth__input"
                 required
               />

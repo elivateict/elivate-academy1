@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import BrandLogo from "./BrandLogo";
+import MagneticButton from "./Immersive/MagneticButton";
 
 const navLinks = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
-  { label: "Hackthon", to: "/hackathons" },
+  { label: "Hackathons", to: "/hackathons" },
   { label: "Curriculum", to: "/curriculum" },
   { label: "Alumni", to: "/alumni" },
   { label: "Contact", to: "/contact" },
@@ -14,11 +14,16 @@ const navLinks = [
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
+    const handleScroll = () => setIsScrolled(window.scrollY > 16);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -33,30 +38,36 @@ function Header() {
     };
   }, [isMenuOpen]);
 
+  const handleNavClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[#d8edf1] bg-white/95 backdrop-blur">
-      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 md:px-10 lg:px-0">
-        <div className="flex items-center justify-between gap-4">
-          <Link to="/" className="w-fit" aria-label="Livate Academy home">
-            <BrandLogo className="max-w-[10.5rem] sm:max-w-[11.75rem]" />
+    <header className={`immersive-nav ${isScrolled ? "immersive-nav--scrolled" : ""}`}>
+      <div className="immersive-nav__shell">
+        <div className="immersive-nav__inner">
+          <Link to="/" className="immersive-nav__brand-link" aria-label="PlusAcademy home">
+            <BrandLogo className="immersive-nav__logo" />
           </Link>
 
-          <nav className="hidden lg:block">
-            <ul className="flex items-center justify-end gap-5 text-base font-medium text-[#1d6273]">
+          <nav className="hidden md:block">
+            <ul className="immersive-nav__list">
               {navLinks.map(({ label, to }) => (
                 <li key={to}>
-                  <Link to={to} className="transition-colors hover:text-[#7ed8e6]">
+                  <Link
+                    to={to}
+                    className={`immersive-nav__link ${
+                      location.pathname === to ? "immersive-nav__link--active" : ""
+                    }`}
+                  >
                     {label}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link
-                  to="/getstarted"
-                  className="rounded-full bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] px-5 py-2 font-semibold text-white shadow-[0_18px_40px_rgba(29,98,115,0.18)] transition-all hover:brightness-110"
-                >
+                <MagneticButton to="/getstarted" className="immersive-nav__cta">
                   Get Started
-                </Link>
+                </MagneticButton>
               </li>
             </ul>
           </nav>
@@ -67,7 +78,7 @@ function Header() {
             aria-expanded={isMenuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#d8edf1] bg-[#f7fcfd] text-[#1d6273] shadow-sm transition-colors hover:bg-[#eff9fb] lg:hidden"
+            className="immersive-menu-button md:hidden"
           >
             <span className="relative h-4 w-5">
               <span
@@ -88,85 +99,67 @@ function Header() {
             </span>
           </button>
         </div>
-
-        <AnimatePresence>
-          {isMenuOpen ? (
-            <>
-              <motion.button
-                type="button"
-                aria-label="Close mobile menu overlay"
-                onClick={() => setIsMenuOpen(false)}
-                className="fixed inset-0 z-40 bg-[#144a58]/18 lg:hidden"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              />
-
-              <motion.nav
-                id="mobile-navigation"
-                className="relative z-50 mt-4 overflow-hidden rounded-3xl border border-[#d8edf1] bg-white shadow-[0_24px_60px_rgba(29,98,115,0.14)] lg:hidden"
-                initial={{ opacity: 0, y: -18, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -14, scale: 0.98 }}
-                transition={{ duration: 0.22, ease: "easeOut" }}
-              >
-                <motion.ul
-                  className="flex flex-col px-4 py-4 text-base font-medium text-[#1d6273]"
-                  initial="closed"
-                  animate="open"
-                  exit="closed"
-                  variants={{
-                    open: {
-                      transition: {
-                        staggerChildren: 0.05,
-                        delayChildren: 0.04,
-                      },
-                    },
-                    closed: {
-                      transition: {
-                        staggerChildren: 0.03,
-                        staggerDirection: -1,
-                      },
-                    },
-                  }}
-                >
-                  {navLinks.map(({ label, to }) => (
-                    <motion.li
-                      key={to}
-                      variants={{
-                        open: { opacity: 1, x: 0 },
-                        closed: { opacity: 0, x: -12 },
-                      }}
-                    >
-                      <Link
-                        to={to}
-                        className="flex items-center justify-between rounded-2xl px-4 py-3 transition-colors hover:bg-[#f4fbfd] hover:text-[#144a58]"
-                      >
-                        <span>{label}</span>
-                        <span className="text-[#7ed8e6]">/</span>
-                      </Link>
-                    </motion.li>
-                  ))}
-                  <motion.li
-                    className="pt-3"
-                    variants={{
-                      open: { opacity: 1, x: 0 },
-                      closed: { opacity: 0, x: -12 },
-                    }}
-                  >
-                    <Link
-                      to="/getstarted"
-                      className="flex items-center justify-center rounded-2xl bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] px-5 py-3 font-semibold text-white shadow-[0_18px_40px_rgba(29,98,115,0.18)] transition-all hover:brightness-110"
-                    >
-                      Get Started
-                    </Link>
-                  </motion.li>
-                </motion.ul>
-              </motion.nav>
-            </>
-          ) : null}
-        </AnimatePresence>
       </div>
+
+      <button
+        type="button"
+        aria-label="Close mobile menu overlay"
+        onClick={() => setIsMenuOpen(false)}
+        className={`immersive-mobile-backdrop md:hidden ${
+          isMenuOpen ? "immersive-mobile-backdrop--open" : ""
+        }`}
+      />
+
+      <nav
+        id="mobile-navigation"
+        className={`immersive-mobile-nav md:hidden ${
+          isMenuOpen ? "immersive-mobile-nav--open" : ""
+        }`}
+      >
+        <div className="immersive-mobile-nav__header">
+          <button
+            type="button"
+            aria-label="Close navigation menu"
+            onClick={() => setIsMenuOpen(false)}
+            className="immersive-mobile-nav__close"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <Link
+            to="/"
+            onClick={handleNavClick}
+            className="immersive-mobile-nav__brand"
+            aria-label="PlusAcademy home"
+          >
+            <BrandLogo className="immersive-mobile-nav__logo" />
+          </Link>
+          <span className="immersive-mobile-nav__header-spacer" aria-hidden="true" />
+        </div>
+
+        <ul className="flex flex-col px-5 py-4 text-sm font-medium">
+          {navLinks.map(({ label, to }) => (
+            <li key={to}>
+              <Link
+                to={to}
+                onClick={handleNavClick}
+                className="flex items-center justify-between rounded-md px-4 py-3 transition-colors"
+              >
+                <span>{label}</span>
+                <span aria-hidden="true">/</span>
+              </Link>
+            </li>
+          ))}
+          <li className="pt-3">
+            <Link
+              to="/getstarted"
+              onClick={handleNavClick}
+              className="immersive-mobile-nav__cta"
+            >
+              Get Started
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </header>
   );
 }

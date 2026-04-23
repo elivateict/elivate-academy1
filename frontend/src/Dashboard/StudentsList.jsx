@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiUrl } from "../utils/api";
 
@@ -21,10 +21,6 @@ function StudentsList() {
     fetchClasses();
   }, []);
 
-  useEffect(() => {
-    fetchStudents();
-  }, [filters]);
-
   const fetchClasses = async () => {
     try {
       const response = await fetch(apiUrl("/api/classes"));
@@ -37,7 +33,7 @@ function StudentsList() {
     }
   };
 
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       setLoading(true);
       let url = apiUrl("/api/students?");
@@ -64,7 +60,11 @@ function StudentsList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, searchTerm]);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
 
   const handleSearch = () => {
     fetchStudents();

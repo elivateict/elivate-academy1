@@ -52,7 +52,7 @@ function DashboardLogin() {
             Admin access
           </p>
           <h1 className="mt-3 text-4xl font-black leading-tight text-[#144a58]">
-            Login to your Livate dashboard.
+            Login to your PlusAcademy dashboard.
           </h1>
           <p className="mt-4 max-w-xl text-base leading-8 text-[#5f7d87]">
             Your dashboard is now protected. Only registered dashboard users can
@@ -107,7 +107,7 @@ function DashboardLogin() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="admin@elivateacademy.com"
+                placeholder="admin@plusacademyhub.com"
                 className="dashboard-auth__input"
                 required
               />

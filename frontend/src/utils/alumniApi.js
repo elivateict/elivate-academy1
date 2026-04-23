@@ -1,6 +1,7 @@
 import { apiUrl, fetchJson } from "./api";
 
-const ALUMNI_STORAGE_KEY = "elivate_alumni_fallback";
+const ALUMNI_STORAGE_KEY = "plusacademy_alumni_fallback";
+const LEGACY_ALUMNI_STORAGE_KEY = "elivate_alumni_fallback";
 
 const getStoredAlumni = () => {
   if (typeof window === "undefined") {
@@ -8,7 +9,9 @@ const getStoredAlumni = () => {
   }
 
   try {
-    const raw = window.localStorage.getItem(ALUMNI_STORAGE_KEY);
+    const raw =
+      window.localStorage.getItem(ALUMNI_STORAGE_KEY) ??
+      window.localStorage.getItem(LEGACY_ALUMNI_STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
@@ -23,6 +26,7 @@ const saveStoredAlumni = (alumni) => {
   }
 
   window.localStorage.setItem(ALUMNI_STORAGE_KEY, JSON.stringify(alumni));
+  window.localStorage.removeItem(LEGACY_ALUMNI_STORAGE_KEY);
 };
 
 const sortByCreatedAtDesc = (items) =>

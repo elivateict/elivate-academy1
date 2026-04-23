@@ -142,8 +142,8 @@ function AlumniManagement() {
         text:
           result.source === "local"
             ? editingAlumni
-              ? "Alumni updated in this browser on https://elivateacademy.com."
-              : "Alumni created in this browser on https://elivateacademy.com."
+              ? "Alumni updated in this browser on https://plusacademyhub.com."
+              : "Alumni created in this browser on https://plusacademyhub.com."
             : editingAlumni
             ? "Alumni updated successfully."
             : "Alumni created successfully.",
@@ -171,7 +171,7 @@ function AlumniManagement() {
         type: "success",
         text:
           result.source === "local"
-            ? "Alumni deleted from this browser on https://elivateacademy.com."
+            ? "Alumni deleted from this browser on https://plusacademyhub.com."
             : "Alumni deleted successfully.",
       });
       if (editingAlumni?._id === id) {
@@ -199,7 +199,7 @@ function AlumniManagement() {
           {usingFallback && (
             <div className="mb-6 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-amber-300">
               <p>
-                Live alumni API is not deployed yet on https://elivateacademy.com. Alumni you add here will be saved in this browser until the backend route is deployed.
+                Live alumni API is not deployed yet on https://plusacademyhub.com. Alumni you add here will be saved in this browser until the backend route is deployed.
               </p>
             </div>
           )}

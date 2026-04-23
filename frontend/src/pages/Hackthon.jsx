@@ -1,10 +1,11 @@
 import HackthonPost from "../Components/Hackthon/HackthonPost";
+import PublicPage from "../Components/Immersive/PublicPage";
 
 function Hackthon() {
   return (
-    <main className="min-h-screen bg-white pt-10 pb-16">
+    <PublicPage className="min-h-screen pt-10 pb-16">
       <HackthonPost />
-    </main>
+    </PublicPage>
   );
 }
 

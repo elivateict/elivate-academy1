@@ -94,7 +94,7 @@ function ClassManagement() {
           text: data.message || "Error saving class",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -135,7 +135,7 @@ function ClassManagement() {
       } else {
         alert(data.message || "Error deleting class");
       }
-    } catch (error) {
+    } catch {
       alert("Network error. Please try again.");
     }
   };
@@ -170,7 +170,7 @@ function ClassManagement() {
           text: data.message || "Error toggling registration",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",

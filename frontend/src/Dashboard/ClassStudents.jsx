@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiUrl } from "../utils/api";
 
@@ -22,13 +22,7 @@ function ClassStudents() {
     hasLaptop: "",
   });
 
-  useEffect(() => {
-    if (className) {
-      fetchStudents();
-    }
-  }, [className]);
-
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       setLoading(true);
       const decodedClassName = decodeURIComponent(className);
@@ -45,7 +39,13 @@ function ClassStudents() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [className]);
+
+  useEffect(() => {
+    if (className) {
+      fetchStudents();
+    }
+  }, [className, fetchStudents]);
 
   const handleExportExcel = async () => {
     try {
@@ -98,7 +98,7 @@ function ClassStudents() {
           text: data.message || "Error updating student status",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -144,7 +144,7 @@ function ClassStudents() {
           text: data.message || "Error updating student statuses",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -213,7 +213,7 @@ function ClassStudents() {
           text: data.message || "Error adding student",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",

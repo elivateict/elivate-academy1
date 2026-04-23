@@ -1,8 +1,7 @@
-import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa";
-import { motion, useInView } from "framer-motion";
 import BrandLogo from "./BrandLogo";
+import MagneticButton from "./Immersive/MagneticButton";
 
 const quickLinks = [
   { label: "About Us", to: "/about" },
@@ -21,49 +20,41 @@ const services = [
 
 function Footer() {
   const year = new Date().getFullYear();
-  const footerRef = useRef(null);
-  const isInView = useInView(footerRef, { once: true, amount: 0.1 });
 
   return (
     <footer
-      ref={footerRef}
-      className="relative overflow-hidden border-t border-[#d8edf1] bg-white text-[#144a58]"
+      data-cinematic
+      className="immersive-footer"
     >
-      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#7ed8e6] to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 left-1/2 h-40 w-[700px] -translate-x-1/2 bg-[#7ed8e6]/25 blur-3xl" />
+      <div className="immersive-footer__particles" aria-hidden="true" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative mx-auto max-w-7xl px-6 pt-14 pb-8 md:px-16 lg:px-24"
-      >
+      <div className="relative mx-auto max-w-7xl px-6 pt-14 pb-8 md:px-16 lg:px-24">
         <div className="grid grid-cols-1 gap-12 pb-12 md:grid-cols-4">
           <div className="space-y-5 md:col-span-2">
-            <Link to="/" className="inline-flex w-fit" aria-label="Livate Academy home">
-              <BrandLogo className="max-w-[14rem] sm:max-w-[16rem]" />
+            <Link to="/" className="immersive-footer__brand" aria-label="PlusAcademy home">
+              <BrandLogo className="immersive-footer__logo" />
             </Link>
 
-            <p className="max-w-md text-sm leading-relaxed text-slate-600 md:text-base">
-              Livate Academy empowers the next generation of developers through
+            <p className="max-w-md text-sm leading-relaxed text-white/70 md:text-base">
+              PlusAcademy empowers the next generation of developers through
               hands-on, project-based bootcamps designed for real-world success.
             </p>
 
             <div className="flex gap-6 pt-2">
               <div className="flex items-center gap-2">
-                <span className="bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] bg-clip-text text-2xl font-bold text-transparent">
+                <span className="text-2xl font-bold text-[#4FFFEA]">
                   4+
                 </span>
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase text-white/50">
                   Courses
                 </span>
               </div>
-              <div className="h-6 w-px bg-[#d8edf1]" />
+              <div className="h-6 w-px bg-white/15" />
               <div className="flex items-center gap-2">
-                <span className="bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] bg-clip-text text-2xl font-bold text-transparent">
+                <span className="text-2xl font-bold text-[#4FFFEA]">
                   100+
                 </span>
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase text-white/50">
                   Alumni
                 </span>
               </div>
@@ -71,7 +62,7 @@ function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-[#1d6273]">
+            <h3 className="mb-5 text-xs font-semibold uppercase text-[#4FFFEA]">
               Quick Links
             </h3>
             <ul className="space-y-3 text-sm">
@@ -79,9 +70,9 @@ function Footer() {
                 <li key={label}>
                   <Link
                     to={to}
-                    className="group flex items-center gap-2 text-slate-600 transition-colors hover:text-[#1d6273]"
+                    className="group flex items-center gap-2 text-white/65 transition-colors hover:text-[#4FFFEA]"
                   >
-                    <span className="h-1 w-1 rounded-full bg-[#7ed8e6] opacity-0 transition-opacity group-hover:opacity-100" />
+                    <span className="h-1 w-1 rounded-full bg-[#4FFFEA] opacity-0 transition-opacity group-hover:opacity-100" />
                     {label}
                   </Link>
                 </li>
@@ -91,7 +82,7 @@ function Footer() {
 
           <div className="space-y-8">
             <div>
-              <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-[#1d6273]">
+              <h3 className="mb-5 text-xs font-semibold uppercase text-[#4FFFEA]">
                 Our Services
               </h3>
               <ul className="space-y-2">
@@ -99,9 +90,9 @@ function Footer() {
                   <li key={service}>
                     <Link
                       to="/curriculum"
-                      className="group -mx-3 flex items-center gap-2.5 rounded-lg border-l-2 border-transparent px-3 py-1.5 text-sm text-slate-600 transition-all duration-200 hover:border-[#7ed8e6] hover:bg-[#f4fbfd] hover:text-[#144a58]"
+                      className="group -mx-3 flex items-center gap-2.5 rounded-lg border-l-2 border-transparent px-3 py-1.5 text-sm text-white/65 transition-all duration-200 hover:border-[#4FFFEA] hover:bg-white/10 hover:text-white"
                     >
-                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#1d6273]/70 transition-colors group-hover:bg-[#7ed8e6]" />
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#00A99D] transition-colors group-hover:bg-[#4FFFEA]" />
                       <span>{service}</span>
                     </Link>
                   </li>
@@ -110,49 +101,54 @@ function Footer() {
             </div>
 
             <div>
-              <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#1d6273]">
+              <h3 className="mb-4 text-xs font-semibold uppercase text-[#4FFFEA]">
                 Connect With Us
               </h3>
               <div className="flex gap-3">
                 <a
                   href="#"
-                  className="group flex h-12 w-12 items-center justify-center rounded-xl border border-[#d8edf1] bg-[#f7fcfd] transition-all duration-300 hover:scale-110 hover:border-pink-400/50 hover:bg-pink-500/10"
+                  className="immersive-social"
                 >
-                  <FaInstagram className="text-lg text-[#1d6273] transition-colors group-hover:text-pink-500" />
+                  <FaInstagram className="text-lg" />
                 </a>
                 <a
                   href="#"
-                  className="group flex h-12 w-12 items-center justify-center rounded-xl border border-[#d8edf1] bg-[#f7fcfd] transition-all duration-300 hover:scale-110 hover:border-blue-400/50 hover:bg-blue-500/10"
+                  className="immersive-social"
                 >
-                  <FaFacebookF className="text-lg text-[#1d6273] transition-colors group-hover:text-blue-500" />
+                  <FaFacebookF className="text-lg" />
                 </a>
                 <a
                   href="252614068829"
-                  className="group flex h-12 w-12 items-center justify-center rounded-xl border border-[#d8edf1] bg-[#f7fcfd] transition-all duration-300 hover:scale-110 hover:border-green-400/50 hover:bg-green-500/10"
+                  className="immersive-social"
                 >
-                  <FaWhatsapp className="text-lg text-[#1d6273] transition-colors group-hover:text-green-500" />
+                  <FaWhatsapp className="text-lg" />
                 </a>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-[#d8edf1] pt-8">
+        <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <span className="text-sm text-slate-500">
-              © {year} Livate Academy. All rights reserved.
+            <span className="text-sm text-white/50">
+              © {year} PlusAcademy. All rights reserved.
             </span>
-            <div className="flex gap-6">
-              <a href="#" className="text-sm text-slate-500 transition-colors hover:text-[#1d6273]">
+            <div className="flex flex-wrap justify-center gap-4">
+              <a href="#" className="text-sm text-white/50 transition-colors hover:text-[#4FFFEA]">
                 Privacy & Data Protection
               </a>
-              <a href="#" className="text-sm text-slate-500 transition-colors hover:text-[#1d6273]">
+              <a href="#" className="text-sm text-white/50 transition-colors hover:text-[#4FFFEA]">
                 Terms of Service
               </a>
             </div>
           </div>
         </div>
-      </motion.div>
+        <div className="mt-8 flex justify-center">
+          <MagneticButton to="/getstarted" variant="ghost">
+            Start learning with us
+          </MagneticButton>
+        </div>
+      </div>
     </footer>
   );
 }

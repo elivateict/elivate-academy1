@@ -121,7 +121,7 @@ function ReadHackathonRegistration() {
           text: data.message || "Could not update hackathon.",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -281,7 +281,7 @@ function ReadHackathonRegistration() {
               </div>
 
               <div>
-                <p className="text-gray-400 mb-1">Studies at Livate Academy</p>
+                <p className="text-gray-400 mb-1">Studies at PlusAcademy</p>
                 <p className="text-white font-medium">
                   {registration.studyRiseAcademy ? "Yes" : "No"}
                 </p>

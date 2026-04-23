@@ -161,6 +161,6 @@ export function getDashboardMeta(pathname) {
 
   return {
     label: "Dashboard",
-    description: "Manage Livate Academy data in one place",
+    description: "Manage PlusAcademy data in one place",
   };
 }

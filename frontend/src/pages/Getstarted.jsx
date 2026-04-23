@@ -1,10 +1,11 @@
 import Getstarted1 from "../Components/getstarted/Getstarted1"
+import PublicPage from "../Components/Immersive/PublicPage"
 
 function Getstarted() {
     return (
-        <div>
+        <PublicPage>
             <Getstarted1 />
-        </div>
+        </PublicPage>
         )
 }
 

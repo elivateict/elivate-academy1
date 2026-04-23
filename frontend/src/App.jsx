@@ -28,6 +28,7 @@ import DashboardLogin from "./pages/DashboardLogin"
 import ManageUsers from "./Dashboard/ManageUsers"
 import { DashboardProtectedRoute } from "./context/DashboardAuthContext"
 import { Routes, Route } from "react-router-dom"
+import LoadingIntro from "./Components/Immersive/LoadingIntro"
 function App () {
   return <>
   <Routes>
@@ -54,6 +55,7 @@ function App () {
 
       <Route path="/*" element={
         <>
+          <LoadingIntro />
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />

@@ -1,7 +1,7 @@
-
-
 import { useState } from "react";
-import { motion } from "framer-motion";
+import MagneticButton from "../Immersive/MagneticButton";
+import SectionHeader from "../Immersive/SectionHeader";
+import TiltCard from "../Immersive/TiltCard";
 
 const programs = [
   {
@@ -12,7 +12,7 @@ const programs = [
     duration: "16 Weeks",
     startDates: "Monthly Cohorts",
     level: "Beginner to Advanced",
-    icon: "💻",
+    icon: "FS",
     modules: [
       {
         name: "Frontend Development",
@@ -60,7 +60,7 @@ const programs = [
     duration: "16 Weeks",
     startDates: "Monthly Cohorts",
     level: "Beginner to Advanced",
-    icon: "📱",
+    icon: "MB",
     modules: [
       {
         name: "Flutter & Dart Fundamentals",
@@ -108,9 +108,6 @@ const programs = [
       },
     ],
   },
- 
- 
-  
   {
     id: 6,
     name: "IoT Development",
@@ -119,7 +116,7 @@ const programs = [
     duration: "16 Weeks",
     startDates: "Monthly Cohorts",
     level: "Beginner to Intermediate",
-    icon: "🌐",
+    icon: "IoT",
     modules: [
       {
         name: "Arduino & Microcontroller Fundamentals",
@@ -180,11 +177,11 @@ const programs = [
         name: "Smart Device Project Development",
         description: "Hands-on projects that combine hardware, software, and networking to build fully functional IoT systems.",
         topics: [
-          "Smart Home Automation System – Control lights, fans, and appliances remotely",
-          "Smart Temperature & Humidity Monitor – Track environmental data in real-time",
-          "IoT-Based Security Alarm System – Detect intrusions and send alerts",
-          "Smart Irrigation System – Automate watering for plants or farms",
-          "Remote Device Control via Mobile/Web – Control devices from anywhere",
+          "Smart Home Automation System - Control lights, fans, and appliances remotely",
+          "Smart Temperature & Humidity Monitor - Track environmental data in real-time",
+          "IoT-Based Security Alarm System - Detect intrusions and send alerts",
+          "Smart Irrigation System - Automate watering for plants or farms",
+          "Remote Device Control via Mobile/Web - Control devices from anywhere",
         ],
         tools: ["Arduino", "ESP32", "Sensors", "Mobile/Web Apps"],
       },
@@ -198,7 +195,7 @@ const programs = [
     duration: "16 Weeks",
     startDates: "Monthly Cohorts",
     level: "Beginner",
-    icon: "🖥",
+    icon: "PC",
     modules: [
       {
         name: "Windows & Operating Systems",
@@ -215,10 +212,10 @@ const programs = [
         name: "Microsoft Office Essentials",
         description: "Master essential productivity tools for school, work, and daily tasks.",
         topics: [
-          "Microsoft Word – Document creation & formatting",
-          "Microsoft Excel – Spreadsheets, formulas & charts",
-          "Microsoft PowerPoint – Presentations & multimedia",
-          "Microsoft Outlook – Email & calendar management",
+          "Microsoft Word - Document creation & formatting",
+          "Microsoft Excel - Spreadsheets, formulas & charts",
+          "Microsoft PowerPoint - Presentations & multimedia",
+          "Microsoft Outlook - Email & calendar management",
         ],
         tools: ["Microsoft Office Suite", "Office Online"],
       },
@@ -264,174 +261,144 @@ export default function Curriculum1() {
   const [selectedProgram, setSelectedProgram] = useState(programs[0]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white pt-24 pb-16 text-[#144a58]">
-      {/* Header Section */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
+    <section className="immersive-section bg-white">
+      <div className="immersive-container">
+        <SectionHeader
+          eyebrow="Curriculum"
+          title="Tech-Focused Curriculum"
+          className="[&_.section-eyebrow]:text-[#0c9f95] [&_.section-title]:text-[#102130] [&_.section-copy]:text-[#4f6572]"
         >
-          <h1 className="mb-4 text-4xl font-extrabold text-[#144a58] md:text-5xl">
-            Tech-Focused Curriculum
-          </h1>
-          <p className="mx-auto max-w-3xl text-base text-slate-600 md:text-lg">
-            Industry-aligned programs designed to transform you into a tech
-            professional. Learn from experts and build real-world projects.
-          </p>
-        </motion.div>
-      </div>
+          Industry-aligned programs designed to transform you into a tech
+          professional. Learn from experts and build real-world projects.
+        </SectionHeader>
 
-      {/* Programs Section */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Program List */}
-          <div className="lg:col-span-1">
-            <div className="lg:sticky lg:top-28">
-              <div className="overflow-hidden rounded-2xl border border-[#d8edf1] bg-[#fcfeff]">
-                <div className="p-4">
-                  <h2 className="mb-4 text-lg font-semibold text-[#144a58]">
-                    Programs
-                  </h2>
-                  <div className="space-y-2">
-                    {programs.map((program) => (
-                      <motion.button
-                        key={program.id}
-                        onClick={() => setSelectedProgram(program)}
-                        whileHover={{ x: 4 }}
-                        whileTap={{ scale: 0.98 }}
-                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
+        <div className="mt-8 grid grid-cols-1 gap-7 lg:grid-cols-[19rem_minmax(0,1fr)]">
+          <aside className="lg:sticky lg:top-28 lg:self-start" data-cinematic>
+            <div className="rounded-2xl border border-[#d8e4ea] bg-white p-4 shadow-[0_18px_44px_rgba(16,33,48,0.08)]">
+              <h2 className="mb-4 text-lg font-semibold text-[#122736]">Programs</h2>
+              <div className="space-y-2.5">
+                {programs.map((program) => (
+                  <button
+                    key={program.id}
+                    onClick={() => setSelectedProgram(program)}
+                    className={`group w-full rounded-xl border px-4 py-3 text-left transition-all duration-300 ${
+                      selectedProgram.id === program.id
+                        ? "border-[#1bb2ab]/30 bg-[#10a79f] text-white shadow-[0_14px_30px_rgba(16,167,159,0.26)]"
+                        : "border-[#e0eaef] bg-white text-[#2d4654] hover:-translate-y-0.5 hover:border-[#b7d9d7] hover:bg-[#f8fbfc]"
+                    }`}
+                  >
+                    <span className="flex items-center gap-3.5">
+                      <span
+                        className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-semibold transition ${
                           selectedProgram.id === program.id
-                            ? "bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] text-white"
-                            : "text-slate-500 hover:bg-[#f4fbfd] hover:text-[#144a58]"
+                            ? "border-white/30 bg-white/18 text-white"
+                            : "border-[#cfe1e7] bg-[#f7fbfc] text-[#1f5f6b] group-hover:border-[#8ec8c6]"
                         }`}
                       >
-                        <div className="flex items-center">
-                          <span className="text-2xl mr-3">{program.icon}</span>
-                          <span className="font-medium">{program.name}</span>
-                        </div>
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
+                        {program.icon}
+                      </span>
+                      <span className="text-sm font-medium leading-snug">{program.name}</span>
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
+          </aside>
 
-          {/* Program Details */}
-          <div className="lg:col-span-3">
-            <motion.div
-              key={selectedProgram.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden rounded-2xl border border-[#d8edf1] bg-[#fcfeff]"
-            >
-              <div className="p-6 md:p-8">
-                <div className="flex items-center mb-6 gap-4">
-                  <span className="text-4xl">{selectedProgram.icon}</span>
-                  <div>
-                    <h2 className="mb-1 text-2xl font-bold text-[#144a58]">
-                      {selectedProgram.name}
-                    </h2>
-                    <p className="text-slate-600">
-                      {selectedProgram.description}
-                    </p>
-                  </div>
+          <div
+            key={selectedProgram.id}
+            className="rounded-2xl border border-[#d8e5eb] bg-white p-5 shadow-[0_20px_48px_rgba(16,33,48,0.08)] transition-all duration-300 md:p-8"
+          >
+            <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-xl border border-[#bfe1df] bg-[#f5fbfb] text-2xl font-semibold text-[#14867f] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.7)]">
+                {selectedProgram.icon}
+              </span>
+              <div>
+                <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#102130]">
+                  {selectedProgram.name}
+                </h2>
+                <p className="max-w-3xl text-sm leading-relaxed text-[#56707d] md:text-base">
+                  {selectedProgram.description}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-9 grid grid-cols-1 gap-3.5 md:grid-cols-3">
+              {[
+                ["Duration", selectedProgram.duration],
+                ["Start Dates", selectedProgram.startDates],
+                ["Level", selectedProgram.level],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="rounded-xl border border-[#d9e8ee] bg-white p-4 shadow-[0_10px_24px_rgba(16,33,48,0.05)]"
+                >
+                  <p className="text-xs font-medium uppercase tracking-[0.08em] text-[#6f8792]">{label}</p>
+                  <p className="mt-1.5 text-lg font-semibold text-[#0e9e96]">{value}</p>
                 </div>
+              ))}
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                  <div className="rounded-lg bg-[#f4fbfd] p-4">
-                    <p className="text-sm text-slate-500">Duration</p>
-                    <p className="text-lg font-medium text-[#144a58]">
-                      {selectedProgram.duration}
+            <h3 className="mb-6 text-xl font-bold text-[#102130]">Course Modules</h3>
+            <div className="space-y-5" data-stagger>
+              {selectedProgram.modules.map((module) => (
+                <TiltCard
+                  key={module.name}
+                  className="rounded-2xl border border-[#dbe8ed] bg-white p-5 shadow-[0_14px_30px_rgba(16,33,48,0.06)] transition-colors duration-300 hover:border-[#b7d9d7]"
+                  data-stagger-item
+                >
+                  <div className="relative z-10">
+                    <h4 className="mb-3 text-lg font-semibold text-[#152b39]">{module.name}</h4>
+                    <p className="mb-5 text-sm leading-relaxed text-[#5f7784]">
+                      {module.description}
                     </p>
-                  </div>
-                  <div className="rounded-lg bg-[#f4fbfd] p-4">
-                    <p className="text-sm text-slate-500">Start Dates</p>
-                    <p className="text-lg font-medium text-[#144a58]">
-                      {selectedProgram.startDates}
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-[#f4fbfd] p-4">
-                    <p className="text-sm text-slate-500">Level</p>
-                    <p className="text-lg font-medium text-[#144a58]">
-                      {selectedProgram.level}
-                    </p>
-                  </div>
-                </div>
 
-                <h3 className="mb-6 text-xl font-bold text-[#144a58]">
-                  Course Modules
-                </h3>
-                <div className="space-y-8">
-                  {selectedProgram.modules.map((module, index) => (
-                    <motion.div
-                      key={module.name}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="border-b border-[#d8edf1] pb-8 last:border-0"
-                    >
-                      <h4 className="mb-3 text-lg font-semibold text-[#144a58]">
-                        {module.name}
-                      </h4>
-                      <p className="mb-4 text-slate-600">
-                        {module.description}
-                      </p>
-
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                          <h5 className="mb-2 text-sm font-semibold text-[#1d6273]">
-                            Topics Covered
-                          </h5>
-                          <ul className="space-y-2">
-                            {module.topics.map((topic) => (
-                              <li
-                                key={topic}
-                                className="flex items-center text-slate-700"
-                              >
-                                <span className="mr-2 text-[#1d6273]">
-                                  →
-                                </span>
-                                {topic}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div>
-                          <h5 className="mb-2 text-sm font-semibold text-[#1d6273]">
-                            Tools & Technologies
-                          </h5>
-                          <div className="flex flex-wrap gap-2">
-                            {module.tools.map((tool) => (
-                              <span
-                                key={tool}
-                                className="rounded bg-[#eff9fb] px-2 py-1 text-xs text-[#1d6273]"
-                              >
-                                {tool}
-                              </span>
-                            ))}
-                          </div>
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <div>
+                        <h5 className="mb-3 text-sm font-semibold text-[#08938b]">
+                          Topics Covered
+                        </h5>
+                        <ul className="space-y-2">
+                          {module.topics.map((topic) => (
+                            <li key={topic} className="flex items-start gap-2 text-sm text-[#415c69]">
+                              <span className="mt-[0.2rem] text-[#0e9e96]">•</span>
+                              <span>{topic}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="mb-3 text-sm font-semibold text-[#08938b]">
+                          Tools & Technologies
+                        </h5>
+                        <div className="flex flex-wrap gap-2">
+                          {module.tools.map((tool) => (
+                            <span
+                              key={tool}
+                              className="rounded-full border border-[#9fd8d5] bg-[#eef8f7] px-2.5 py-1 text-xs font-medium text-[#11766f]"
+                            >
+                              {tool}
+                            </span>
+                          ))}
                         </div>
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              ))}
+            </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-8 w-full rounded-lg bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] px-6 py-3 font-medium text-white transition-all duration-300 hover:brightness-110"
-                >
-                  Apply Now
-                </motion.button>
-              </div>
-            </motion.div>
+            <div className="mt-8">
+              <MagneticButton
+                to="/getstarted"
+                className="w-full rounded-xl bg-[#0ea39b] py-3.5 text-base font-semibold text-white shadow-[0_16px_34px_rgba(14,163,155,0.33)] transition hover:bg-[#09928b]"
+              >
+                Apply Now
+              </MagneticButton>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

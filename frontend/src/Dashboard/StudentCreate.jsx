@@ -104,7 +104,7 @@ function StudentCreate() {
           text: data.message || "Registration failed. Please try again.",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please check your connection and try again.",

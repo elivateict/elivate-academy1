@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiUrl } from "../utils/api";
 
@@ -38,13 +38,7 @@ function ReadStudent() {
     }
   };
 
-  useEffect(() => {
-    if (id) {
-      fetchStudent();
-    }
-  }, [id]);
-
-  const fetchStudent = async () => {
+  const fetchStudent = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(apiUrl(`/api/students/${id}`));
@@ -70,7 +64,13 @@ function ReadStudent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchStudent();
+    }
+  }, [id, fetchStudent]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -108,7 +108,7 @@ function ReadStudent() {
           text: data.message || "Error updating student",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -134,7 +134,7 @@ function ReadStudent() {
       } else {
         alert(data.message || "Error deleting student");
       }
-    } catch (error) {
+    } catch {
       alert("Network error. Please try again.");
     }
   };

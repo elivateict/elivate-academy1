@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { apiUrl } from "../utils/api";
+import PublicPage from "../Components/Immersive/PublicPage";
+import MagneticButton from "../Components/Immersive/MagneticButton";
 
 const initialFormData = {
   fullName: "",
@@ -37,7 +39,7 @@ function RegisterHackthon() {
             text: data.message || "Hackathon not found.",
           });
         }
-      } catch (error) {
+      } catch {
         setMessage({
           type: "error",
           text: "We could not load this hackathon right now.",
@@ -100,7 +102,7 @@ function RegisterHackthon() {
           text: data.message || "We could not submit your registration.",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -112,32 +114,29 @@ function RegisterHackthon() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f7fcfd] px-6 text-[#144a58]">
-        <p className="text-sm text-slate-500 md:text-base">
+      <PublicPage className="flex min-h-screen items-center justify-center px-6">
+        <p className="text-sm text-white/60 md:text-base">
           Loading registration form...
         </p>
-      </main>
+      </PublicPage>
     );
   }
 
   if (!hackathon) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f7fcfd] px-6 text-[#144a58]">
+      <PublicPage className="flex min-h-screen items-center justify-center px-6">
         <div className="max-w-xl space-y-4 text-center">
-          <h1 className="text-2xl font-semibold md:text-3xl">
+          <h1 className="text-2xl font-semibold text-white md:text-3xl">
             Hackathon not found
           </h1>
-          <p className="text-sm text-slate-600 md:text-base">
+          <p className="text-sm text-white/64 md:text-base">
             We could not find the hackathon you are trying to register for.
           </p>
-          <Link
-            to="/hackathons"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] px-5 py-2.5 text-sm font-medium text-white shadow-md transition-all hover:brightness-110"
-          >
+          <MagneticButton to="/hackathons">
             Back to hackathons
-          </Link>
+          </MagneticButton>
         </div>
-      </main>
+      </PublicPage>
     );
   }
 
@@ -147,32 +146,32 @@ function RegisterHackthon() {
     : "";
 
   return (
-    <main className="min-h-screen bg-[#f7fcfd] py-16 text-[#144a58] md:py-20">
+    <PublicPage className="min-h-screen py-16 md:py-20">
       <div className="mx-auto max-w-5xl px-6 md:px-10 lg:px-0">
-        <div className="mb-6 flex items-center gap-2 text-xs text-slate-500 md:text-sm">
-          <Link to="/hackathons" className="transition-colors hover:text-[#1d6273]">
+        <div className="mb-6 flex items-center gap-2 text-xs text-white/46 md:text-sm" data-cinematic>
+          <Link to="/hackathons" className="transition-colors hover:text-[#4FFFEA]">
             Hackathons
           </Link>
           <span>/</span>
           <Link
             to={`/hackathons/${hackathon._id}`}
-            className="transition-colors hover:text-[#1d6273]"
+            className="transition-colors hover:text-[#4FFFEA]"
           >
             {hackathon.title}
           </Link>
           <span>/</span>
-          <span className="text-slate-600">Registration</span>
+          <span className="text-white/66">Registration</span>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
-          <section className="rounded-3xl border border-[#d8edf1] bg-white p-6 shadow-[0_22px_70px_rgba(29,98,115,0.08)] md:p-8">
-            <p className="text-xs uppercase tracking-[0.22em] text-[#1d6273]">
+          <section className="cinematic-panel p-6 md:p-8" data-cinematic>
+            <p className="text-xs uppercase text-[#4FFFEA]">
               Hackathon registration
             </p>
-            <h1 className="mt-3 text-2xl font-semibold md:text-3xl">
+            <h1 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
               Join {hackathon.title}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600 md:text-base">
+            <p className="mt-3 text-sm leading-relaxed text-white/64 md:text-base">
               Fill in your real details so the team can review your application
               for this hackathon.
             </p>
@@ -181,8 +180,8 @@ function RegisterHackthon() {
               <div
                 className={`mt-6 rounded-2xl border px-4 py-3 text-sm ${
                   message.type === "success"
-                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                    : "border-rose-200 bg-rose-50 text-rose-700"
+                    ? "border-emerald-300/35 bg-emerald-400/10 text-emerald-200"
+                    : "border-rose-300/35 bg-rose-400/10 text-rose-200"
                 }`}
               >
                 {message.text}
@@ -190,54 +189,48 @@ function RegisterHackthon() {
             )}
 
             {!registrationOpen ? (
-              <div className="mt-8 rounded-3xl border border-amber-200 bg-amber-50 p-6">
-                <h2 className="text-lg font-semibold text-amber-800">
+              <div className="mt-8 rounded-lg border border-amber-300/35 bg-amber-400/10 p-6">
+                <h2 className="text-lg font-semibold text-amber-200">
                   Registration has ended
                 </h2>
-                <p className="mt-2 text-sm text-amber-700">
+                <p className="mt-2 text-sm text-amber-100/80">
                   The registration time for this hackathon is over. Please check
                   back for the next hackathon.
                 </p>
-                <Link
-                  to={`/hackathons/${hackathon._id}`}
-                  className="mt-4 inline-flex items-center rounded-full bg-amber-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-amber-700"
-                >
+                <MagneticButton to={`/hackathons/${hackathon._id}`} className="mt-4">
                   Back to hackathon page
-                </Link>
+                </MagneticButton>
               </div>
             ) : submitted ? (
-              <div className="mt-8 rounded-3xl border border-emerald-200 bg-emerald-50 p-6">
-                <h2 className="text-lg font-semibold text-emerald-800">
+              <div className="mt-8 rounded-lg border border-emerald-300/35 bg-emerald-400/10 p-6">
+                <h2 className="text-lg font-semibold text-emerald-200">
                   Registration received
                 </h2>
-                <p className="mt-2 text-sm text-emerald-700">
+                <p className="mt-2 text-sm text-emerald-100/80">
                   Your details were saved successfully. The team can now review
                   your hackathon registration.
                 </p>
-                <Link
-                  to={`/hackathons/${hackathon._id}`}
-                  className="mt-4 inline-flex items-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-emerald-700"
-                >
+                <MagneticButton to={`/hackathons/${hackathon._id}`} className="mt-4">
                   Return to hackathon page
-                </Link>
+                </MagneticButton>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              <form onSubmit={handleSubmit} className="cinematic-form mt-8 space-y-5">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                  <label className="mb-2 block text-sm font-medium text-white/72">
                     Selected hackathon
                   </label>
                   <input
                     type="text"
                     value={hackathon.title}
                     readOnly
-                    className="w-full rounded-2xl border border-[#d8edf1] bg-[#eef8fa] px-4 py-3 text-sm font-medium text-[#144a58] outline-none"
+                    className="px-4 py-3 text-sm font-medium"
                   />
                 </div>
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       Full name
                     </label>
                     <input
@@ -246,12 +239,12 @@ function RegisterHackthon() {
                       value={formData.fullName}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       Email address
                     </label>
                     <input
@@ -260,12 +253,12 @@ function RegisterHackthon() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       WhatsApp number
                     </label>
                     <input
@@ -274,12 +267,12 @@ function RegisterHackthon() {
                       value={formData.whatsappNumber}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       Where do you live?
                     </label>
                     <input
@@ -289,12 +282,12 @@ function RegisterHackthon() {
                       onChange={handleChange}
                       placeholder="City / district"
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       Gender
                     </label>
                     <select
@@ -302,7 +295,7 @@ function RegisterHackthon() {
                       value={formData.gender}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     >
                       <option value="">Select gender</option>
                       <option value="male">Male</option>
@@ -311,7 +304,7 @@ function RegisterHackthon() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       Highest education
                     </label>
                     <select
@@ -319,7 +312,7 @@ function RegisterHackthon() {
                       value={formData.highestEducation}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     >
                       <option value="">Select education level</option>
                       <option value="Primary school">Primary school</option>
@@ -330,7 +323,7 @@ function RegisterHackthon() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       Computer experience
                     </label>
                     <select
@@ -338,7 +331,7 @@ function RegisterHackthon() {
                       value={formData.mernStackExperience}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     >
                       <option value="">Select your level</option>
                       <option value="Beginner">Beginner</option>
@@ -348,7 +341,7 @@ function RegisterHackthon() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#144a58]">
+                    <label className="mb-2 block text-sm font-medium text-white/72">
                       Do you have a computer?
                     </label>
                     <select
@@ -356,7 +349,7 @@ function RegisterHackthon() {
                       value={formData.hasComputer}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                      className="px-4 py-3 text-sm"
                     >
                       <option value="">Choose an option</option>
                       <option value="true">Yes</option>
@@ -366,15 +359,15 @@ function RegisterHackthon() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#144a58]">
-                    Are you already studying at Livate Academy?
+                  <label className="mb-2 block text-sm font-medium text-white/72">
+                    Are you already studying at PlusAcademy?
                   </label>
                   <select
                     name="studyRiseAcademy"
                     value={formData.studyRiseAcademy}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-2xl border border-[#d8edf1] bg-[#fcfeff] px-4 py-3 text-sm text-[#144a58] outline-none transition focus:border-[#7ed8e6] focus:ring-2 focus:ring-[#d8edf1]"
+                    className="px-4 py-3 text-sm"
                   >
                     <option value="">Choose an option</option>
                     <option value="true">Yes</option>
@@ -382,17 +375,17 @@ function RegisterHackthon() {
                   </select>
                 </div>
 
-                <div className="flex flex-col gap-3 border-t border-[#d8edf1] pt-5 sm:flex-row">
-                  <button
+                <div className="flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row">
+                  <MagneticButton
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#1d6273] to-[#7ed8e6] px-6 py-3 text-sm font-medium text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                    className="px-6 py-3 text-sm"
                   >
                     {submitting ? "Submitting..." : "Submit registration"}
-                  </button>
+                  </MagneticButton>
                   <Link
                     to={`/hackathons/${hackathon._id}`}
-                    className="inline-flex items-center justify-center rounded-full border border-[#d8edf1] bg-white px-6 py-3 text-sm font-medium text-[#144a58] transition hover:border-[#7ed8e6] hover:text-[#1d6273]"
+                    className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white transition hover:border-[#4FFFEA]/55 hover:text-[#4FFFEA]"
                   >
                     Cancel
                   </Link>
@@ -402,35 +395,35 @@ function RegisterHackthon() {
           </section>
 
           <aside className="space-y-4">
-            <div className="rounded-3xl border border-[#d8edf1] bg-white p-6 shadow-[0_18px_50px_rgba(29,98,115,0.08)]">
-              <p className="text-xs uppercase tracking-[0.22em] text-[#1d6273]">
+            <div className="cinematic-panel p-6" data-cinematic>
+              <p className="text-xs uppercase text-[#4FFFEA]">
                 Event details
               </p>
-              <h2 className="mt-3 text-xl font-semibold">{hackathon.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              <h2 className="mt-3 text-xl font-semibold text-white">{hackathon.title}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-white/64">
                 {hackathon.description}
               </p>
 
-              <div className="mt-5 space-y-3 rounded-2xl border border-[#d8edf1] bg-[#f7fcfd] p-4 text-sm">
+              <div className="mt-5 space-y-3 rounded-lg border border-white/10 bg-white/5 p-4 text-sm">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-slate-500">Date</span>
-                  <span className="font-medium text-[#144a58]">
+                  <span className="text-white/50">Date</span>
+                  <span className="font-medium text-white">
                     {formattedDate || "-"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-slate-500">Location</span>
-                  <span className="font-medium text-[#144a58]">
+                  <span className="text-white/50">Location</span>
+                  <span className="font-medium text-white">
                     {hackathon.location || "-"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-slate-500">Registration</span>
+                  <span className="text-white/50">Registration</span>
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${
                       registrationOpen
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-amber-100 text-amber-700"
+                        ? "bg-emerald-400/10 text-emerald-200"
+                        : "bg-amber-400/10 text-amber-200"
                     }`}
                   >
                     {registrationOpen ? "Open now" : "Closed"}
@@ -439,8 +432,8 @@ function RegisterHackthon() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-dashed border-[#d8edf1] bg-white p-6 text-sm text-slate-600">
-              <p className="font-semibold text-[#144a58]">
+            <div className="rounded-lg border border-dashed border-[#4FFFEA]/22 bg-white/5 p-6 text-sm text-white/62" data-cinematic>
+              <p className="font-semibold text-white">
                 What we collect
               </p>
               <p className="mt-2 leading-relaxed">
@@ -452,7 +445,7 @@ function RegisterHackthon() {
           </aside>
         </div>
       </div>
-    </main>
+    </PublicPage>
   );
 }
 

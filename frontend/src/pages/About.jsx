@@ -1,8 +1,11 @@
-import AboutElivate from "../Components/About/AboutElivate"
+import AboutPlusAcademy from "../Components/About/AboutPlusAcademy";
+import PublicPage from "../Components/Immersive/PublicPage";
 function About() {
-    return <>
-    <AboutElivate />
-    </>
+  return (
+    <PublicPage>
+      <AboutPlusAcademy />
+    </PublicPage>
+  );
 }
 
-export default About
+export default About;

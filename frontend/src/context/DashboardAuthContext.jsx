@@ -1,20 +1,24 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { apiUrl } from "../utils/api";
+import { apiClient, getApiErrorMessage } from "../utils/api";
 
-const DASHBOARD_SESSION_KEY = "elivate_dashboard_session";
+const DASHBOARD_SESSION_KEY = "plusacademy_dashboard_session";
+const LEGACY_DASHBOARD_SESSION_KEY = "elivate_dashboard_session";
 
 const DashboardAuthContext = createContext(null);
 
 function readStoredSession() {
   try {
-    const rawValue = window.localStorage.getItem(DASHBOARD_SESSION_KEY);
+    const rawValue =
+      window.localStorage.getItem(DASHBOARD_SESSION_KEY) ??
+      window.localStorage.getItem(LEGACY_DASHBOARD_SESSION_KEY);
     return rawValue ? JSON.parse(rawValue) : null;
   } catch (error) {
     console.error("Error reading stored dashboard session:", error);
@@ -23,10 +27,9 @@ function readStoredSession() {
 }
 
 async function fetchDashboardAuthStatus() {
-  const response = await fetch(apiUrl("/api/dashboard-auth/status"));
-  const data = await response.json();
+  const { data } = await apiClient.get("/api/dashboard-auth/status");
 
-  if (!response.ok || !data.success) {
+  if (!data.success) {
     throw new Error(data.message || "Could not read dashboard auth status.");
   }
 
@@ -34,17 +37,9 @@ async function fetchDashboardAuthStatus() {
 }
 
 async function registerDashboardUser(payload) {
-  const response = await fetch(apiUrl("/api/dashboard-auth/register"), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  const { data } = await apiClient.post("/api/dashboard-auth/register", payload);
 
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
+  if (!data.success) {
     throw new Error(data.message || "Could not create dashboard account.");
   }
 
@@ -52,17 +47,9 @@ async function registerDashboardUser(payload) {
 }
 
 async function loginDashboardUser(payload) {
-  const response = await fetch(apiUrl("/api/dashboard-auth/login"), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  const { data } = await apiClient.post("/api/dashboard-auth/login", payload);
 
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
+  if (!data.success) {
     throw new Error(data.message || "Could not login to dashboard.");
   }
 
@@ -70,10 +57,9 @@ async function loginDashboardUser(payload) {
 }
 
 async function fetchDashboardUsers() {
-  const response = await fetch(apiUrl("/api/dashboard-auth/users"));
-  const data = await response.json();
+  const { data } = await apiClient.get("/api/dashboard-auth/users");
 
-  if (!response.ok || !data.success) {
+  if (!data.success) {
     throw new Error(data.message || "Could not load dashboard users.");
   }
 
@@ -81,17 +67,12 @@ async function fetchDashboardUsers() {
 }
 
 async function updateDashboardUserStatus(userId, isSuspended) {
-  const response = await fetch(apiUrl(`/api/dashboard-auth/users/${userId}/status`), {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ isSuspended }),
-  });
+  const { data } = await apiClient.patch(
+    `/api/dashboard-auth/users/${userId}/status`,
+    { isSuspended }
+  );
 
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
+  if (!data.success) {
     throw new Error(data.message || "Could not update dashboard user.");
   }
 
@@ -99,13 +80,9 @@ async function updateDashboardUserStatus(userId, isSuspended) {
 }
 
 async function deleteDashboardUser(userId) {
-  const response = await fetch(apiUrl(`/api/dashboard-auth/users/${userId}`), {
-    method: "DELETE",
-  });
+  const { data } = await apiClient.delete(`/api/dashboard-auth/users/${userId}`);
 
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
+  if (!data.success) {
     throw new Error(data.message || "Could not delete dashboard user.");
   }
 
@@ -117,7 +94,7 @@ export function DashboardAuthProvider({ children }) {
   const [ready, setReady] = useState(false);
   const [hasRegisteredUsers, setHasRegisteredUsers] = useState(false);
 
-  const persistSession = (user) => {
+  const persistSession = useCallback((user) => {
     setCurrentUser(user);
 
     if (user) {
@@ -132,10 +109,12 @@ export function DashboardAuthProvider({ children }) {
           updatedAt: user.updatedAt,
         })
       );
+      window.localStorage.removeItem(LEGACY_DASHBOARD_SESSION_KEY);
     } else {
       window.localStorage.removeItem(DASHBOARD_SESSION_KEY);
+      window.localStorage.removeItem(LEGACY_DASHBOARD_SESSION_KEY);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const bootstrapAuth = async () => {
@@ -164,7 +143,10 @@ export function DashboardAuthProvider({ children }) {
           }
         }
       } catch (error) {
-        console.error("Error loading dashboard auth status:", error);
+        console.error(
+          "Error loading dashboard auth status:",
+          getApiErrorMessage(error, "Could not load dashboard auth status.")
+        );
         setHasRegisteredUsers(Boolean(storedSession?.email));
       } finally {
         setReady(true);
@@ -172,9 +154,9 @@ export function DashboardAuthProvider({ children }) {
     };
 
     bootstrapAuth();
-  }, []);
+  }, [persistSession]);
 
-  const register = async ({ fullName, email, password }) => {
+  const register = useCallback(async ({ fullName, email, password }) => {
     const user = await registerDashboardUser({
       fullName,
       email,
@@ -185,9 +167,9 @@ export function DashboardAuthProvider({ children }) {
     persistSession(user);
 
     return user;
-  };
+  }, [persistSession]);
 
-  const login = async ({ email, password }) => {
+  const login = useCallback(async ({ email, password }) => {
     const user = await loginDashboardUser({
       email,
       password,
@@ -197,11 +179,11 @@ export function DashboardAuthProvider({ children }) {
     persistSession(user);
 
     return user;
-  };
+  }, [persistSession]);
 
-  const getUsers = async () => fetchDashboardUsers();
+  const getUsers = useCallback(async () => fetchDashboardUsers(), []);
 
-  const setUserSuspended = async (userId, isSuspended) => {
+  const setUserSuspended = useCallback(async (userId, isSuspended) => {
     const user = await updateDashboardUserStatus(userId, isSuspended);
 
     if (currentUser?.id === user.id) {
@@ -213,9 +195,9 @@ export function DashboardAuthProvider({ children }) {
     }
 
     return user;
-  };
+  }, [currentUser?.id, persistSession]);
 
-  const removeUser = async (userId) => {
+  const removeUser = useCallback(async (userId) => {
     const isCurrentUser = currentUser?.id === userId;
 
     await deleteDashboardUser(userId);
@@ -228,17 +210,20 @@ export function DashboardAuthProvider({ children }) {
       const status = await fetchDashboardAuthStatus();
       setHasRegisteredUsers(Boolean(status.hasUsers));
     } catch (error) {
-      console.error("Error refreshing dashboard auth status:", error);
+      console.error(
+        "Error refreshing dashboard auth status:",
+        getApiErrorMessage(error, "Could not refresh dashboard auth status.")
+      );
     }
 
     return {
       deletedCurrentUser: isCurrentUser,
     };
-  };
+  }, [currentUser?.id, persistSession]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     persistSession(null);
-  };
+  }, [persistSession]);
 
   const value = useMemo(
     () => ({
@@ -253,7 +238,17 @@ export function DashboardAuthProvider({ children }) {
       removeUser,
       logout,
     }),
-    [currentUser, ready, hasRegisteredUsers]
+    [
+      currentUser,
+      ready,
+      hasRegisteredUsers,
+      register,
+      login,
+      getUsers,
+      setUserSuspended,
+      removeUser,
+      logout,
+    ]
   );
 
   return (
@@ -263,6 +258,7 @@ export function DashboardAuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useDashboardAuth() {
   const context = useContext(DashboardAuthContext);
 

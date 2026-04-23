@@ -1,18 +1,12 @@
+import plusAcademyLogo from "../assets/plusacademy logo.jpeg";
+
 function BrandLogo({ className = "" }) {
   return (
     <span
-      className={`brand-logo ${className}`.trim()}
-      aria-label="Livate Academy"
+      className={`brand-logo brand-logo--image ${className}`.trim()}
+      aria-label="PlusAcademy"
     >
-      <span className="brand-logo__mark" aria-hidden="true">
-        <span className="brand-logo__stroke brand-logo__stroke--primary" />
-        <span className="brand-logo__stroke brand-logo__stroke--accent" />
-        <span className="brand-logo__stroke brand-logo__stroke--secondary" />
-      </span>
-      <span className="brand-logo__text">
-        <span className="brand-logo__title">LIVATE</span>
-        <span className="brand-logo__subtitle">ACADEMY</span>
-      </span>
+      <img src={plusAcademyLogo} alt="PlusAcademy" className="brand-logo__image" />
     </span>
   );
 }

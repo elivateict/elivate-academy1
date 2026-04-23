@@ -1,15 +1,10 @@
-import HeroSection from "../Components/Home/Hero-section"
-import ImpactHome from "../Components/Home/Impact-Home"
-import CoursesHome from "../Components/Home/Courses-Home"
-import Choose from "../Components/Home/Choose"
+import PublicPage from "../Components/Immersive/PublicPage"
+import PlusAcademyLanding from "../Components/Home/PlusAcademyLanding"
 
 function Home () {
-  return <>
-  <HeroSection />
-  <ImpactHome />
-  <CoursesHome /> 
-  <Choose />
-  </>
+  return <PublicPage>
+  <PlusAcademyLanding />
+  </PublicPage>
 }
 
 export default Home

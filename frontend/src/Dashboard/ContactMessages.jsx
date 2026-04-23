@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { apiUrl } from "../utils/api";
 
 function ContactMessages() {
@@ -11,11 +11,7 @@ function ContactMessages() {
   });
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  useEffect(() => {
-    fetchContacts();
-  }, [filters]);
-
-  const fetchContacts = async () => {
+  const fetchContacts = useCallback(async () => {
     try {
       setLoading(true);
       let url = apiUrl("/api/contacts?");
@@ -37,7 +33,11 @@ function ContactMessages() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchContacts();
+  }, [fetchContacts]);
 
   const handleViewContact = async (id) => {
     try {
@@ -86,7 +86,7 @@ function ContactMessages() {
           text: data.message || "Error updating status",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Network error. Please try again.",
@@ -115,7 +115,7 @@ function ContactMessages() {
       } else {
         alert(data.message || "Error deleting message");
       }
-    } catch (error) {
+    } catch {
       alert("Network error. Please try again.");
     }
   };
